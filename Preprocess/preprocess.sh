@@ -20,6 +20,7 @@ do
     nohup python3 $HOMEPATH/Preprocess/preprocess.py $datapath/EventList_ttbar_"$i".h5 ttbar $i > $outpath/ttbar_preprocess_"$i".log &
     nohup python3 $HOMEPATH/Preprocess/preprocess.py $datapath/EventList_ppbbbb_"$i".h5 ppbbbb $i > $outpath/ppbbbb_preprocess_"$i".log &
     nohup python3 $HOMEPATH/Preprocess/preprocess.py $datapath/EventList_ppjjjj_"$i".h5 ppjjjj $i > $outpath/ppjjjj_preprocess_"$i".log &
+    nohup python3 $HOMEPATH/Preprocess/preprocess.py $datapath/EventList_ppjjjb_"$i".h5 ppjjjb $i > $outpath/ppjjjb_preprocess_"$i".log &
 
     date +"%Y %b %m"
 
