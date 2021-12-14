@@ -1,0 +1,110 @@
+****************************************************
+*                                                  *
+*    2HDMC - Two-Higgs-Doublet Model Calculator    *
+*             http://2hdmc.hepforge.org            *
+*                  Version 1.8.0                   *
+*             Compiled on Jun  7 2021              *
+*                                                  *
+****************************************************
+
+2HDM parameters in physical mass basis:
+      m_h:    125.00000
+      m_H:   1000.00000
+      m_A:   1001.00000
+     m_H+:   1001.00000
+ sin(b-a):      0.99612
+ lambda_6:      0.00000
+ lambda_7:      0.00000
+    m12^2: 400000.00000
+tan(beta):      5.00000
+
+2HDM parameters in generic basis:
+ lambda_1:   -433.89072
+ lambda_2:     -0.90347
+ lambda_3:    -10.40733
+ lambda_4:     17.78155
+ lambda_5:     17.78155
+ lambda_6:      0.00000
+ lambda_7:      0.00000
+    m12^2: 400000.00000
+tan(beta):      5.00000
+
+Constraints:
+ Tree-level unitarity: 0
+ Perturbativity:       0
+ Stability:            0
+
+Oblique parameters:
+ S             8.12838e-04
+ T            -1.82421e-03
+ U            -3.46517e-05
+ V             1.72265e-05
+ W            -3.16402e-06
+ X            -5.89674e-06
+ Delta_rho    -1.64694e-04
+ Delta_amu    -4.42328e-12
+
+LesHouches output written to file parameters.out
+
+Decay table for h 
+Total width:   2.340e-03 GeV      BR
+h  -> s  s     3.095e-07      1.323e-04
+h  -> c  c     1.234e-04      5.272e-02
+h  -> b  b     8.330e-04      3.560e-01
+h  -> e  e     6.625e-12      2.831e-09
+h  -> mu mu    2.832e-07      1.210e-04
+h  -> ta ta    8.001e-05      3.419e-02
+h  -> ga ga    9.851e-06      4.210e-03
+h  -> Z  Z     1.047e-04      4.473e-02
+h  -> W+ W-    8.378e-04      3.580e-01
+h  -> Z  ga    6.347e-06      2.712e-03
+h  -> g  g     3.444e-04      1.472e-01
+---------------------------------------
+
+Decay table for H 
+Total width:   3.553e+01 GeV      BR
+H  -> s  s     1.345e-04      3.785e-06
+H  -> c  c     8.207e-06      2.310e-07
+H  -> b  b     3.790e-01      1.067e-02
+H  -> t  t     5.456e-01      1.536e-02
+H  -> e  e     4.403e-09      1.239e-10
+H  -> mu mu    1.882e-04      5.299e-06
+H  -> ta ta    5.323e-02      1.498e-03
+H  -> ga ga    1.563e-04      4.399e-06
+H  -> Z  Z     1.186e+00      3.337e-02
+H  -> W+ W-    2.401e+00      6.758e-02
+H  -> Z  ga    1.305e-04      3.674e-06
+H  -> g  g     6.992e-04      1.968e-05
+H  -> h  h     3.096e+01      8.715e-01
+---------------------------------------
+
+Decay table for A 
+Total width:   4.741e+00 GeV      BR
+A  -> s  s     1.313e-04      2.769e-05
+A  -> c  c     2.679e-05      5.652e-06
+A  -> b  b     3.695e-01      7.794e-02
+A  -> t  t     1.947e+00      4.106e-01
+A  -> e  e     4.289e-09      9.046e-10
+A  -> mu mu    1.834e-04      3.867e-05
+A  -> ta ta    5.185e-02      1.094e-02
+A  -> ga ga    1.097e-05      2.313e-06
+A  -> Z  ga    3.888e-06      8.200e-07
+A  -> g  g     3.974e-03      8.383e-04
+A  -> Z  h     2.369e+00      4.996e-01
+---------------------------------------
+
+Decay table for H+
+Total width:   4.575e+00 GeV      BR
+H+ -> u  s     6.533e-06      1.428e-06
+H+ -> u  b     4.467e-06      9.762e-07
+H+ -> c  d     1.302e-06      2.845e-07
+H+ -> c  s     1.462e-04      3.195e-05
+H+ -> c  b     6.155e-04      1.345e-04
+H+ -> t  d     1.350e-04      2.950e-05
+H+ -> t  s     2.931e-03      6.407e-04
+H+ -> t  b     2.137e+00      4.671e-01
+H+ -> e  ve    4.289e-09      9.373e-10
+H+ -> mu vm    1.834e-04      4.007e-05
+H+ -> ta vt    5.185e-02      1.133e-02
+H+ -> W+ h     2.383e+00      5.207e-01
+---------------------------------------
