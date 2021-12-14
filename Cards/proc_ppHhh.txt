@@ -1,0 +1,50 @@
+import model 2HDMtII_NLO
+
+generate p p > h2 [QCD]
+
+
+output /home/u5/THDM/proc_ppHhh
+
+launch /home/u5/THDM/proc_ppHhh
+
+shower=Pythia8
+detector=Delphes
+analysis=OFF
+madspin=ON
+done
+
+
+/home/alan/ML_Analysis/THDM/Cards/delphes_card_HLLHC.tcl
+
+set run_card nevents 100000
+set run_card ebeam1 7000.0
+set run_card ebeam2 7000.0
+
+set run_card pdlabel lhapdf 
+set run_card lhaid 260000  #NNPDF30_nlo_as_0118
+set run_card fixed_ren_scale True
+set run_card fixed_fac_scale True
+set run_card scale 500
+set run_card dsqrt_q2fact1 500
+set run_card dsqrt_q2fact2 500
+
+set param_card tanbeta 5
+set param_card sinbma 0.99612
+set param_card mh1 125
+set param_card mh2 1000
+set param_card mh3 1001
+set param_card mhc 1001
+
+set param_card l2 -0.90347
+set param_card l3 -10.40733
+set param_card lr7 0
+
+
+# #enhance high pt samples
+# set pt_min_pdg {25:1000} 
+
+
+set spinmode none
+decay h2 > h1 h1, h1 > b b~
+
+done
