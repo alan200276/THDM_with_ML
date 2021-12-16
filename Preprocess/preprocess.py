@@ -68,6 +68,10 @@ Input Check and Setting
 ###################################################################################
 logging.info("Input Check and Setting")
 
+if len(sys.argv) < 4:
+    raise ValueError("********* Usage: python3 preprocess.py <path-of-file>/XXXX.h5 PRO file_number *********")
+    
+
 try:
     data_path = str(sys.argv[1])
     
