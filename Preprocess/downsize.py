@@ -48,6 +48,10 @@ Input Check and Setting
 ###################################################################################
 logging.info("Input Check and Setting")
 logging.info("\n")
+
+if len(sys.argv) < 5:
+    raise ValueError("********* Usage: python3 downsize.py <path-of-file>/XXXX.root mc_type save_path file_number *********")
+    
 try:
     data_path = str(sys.argv[1])
     
