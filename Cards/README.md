@@ -47,7 +47,7 @@
 
 
 
-* Background (QCD multijet )   
+* Background (QCD multijet (only b) )   
     * process:   
     ```
     define p = p b b~    
@@ -67,4 +67,84 @@
     * process card:
     ```
     proc_ppbbbb.txt
+    ```
+
+* Background (QCD multijet (inclusive) )   
+
+    * process:   
+    ```
+    define p = p b b~
+    define j = j b b~
+
+    generate p p > j j j j 
+    ```  
+
+
+    * run_card setting:
+    ```
+    set run_card nevents 100000
+    set run_card ebeam1 7000.0
+    set run_card ebeam2 7000.0
+    set run_card pdlabel lhapdf 
+    set run_card lhaid 260000  #NNPDF30_nlo_as_0118
+
+    set run_card ihtmin 850
+    ```
+    * process card:
+    ```
+    proc_jjjj.txt
+    ```
+
+* Background (QCD multijet (one b) )   
+
+    * process:   
+    ```
+    define p = p b b~
+    define j = j b b~
+    define bb = b b~
+
+    generate p p > j j j bb
+    ```  
+    
+    * run_card setting:
+    ```
+    set run_card nevents 100000
+    set run_card ebeam1 7000.0
+    set run_card ebeam2 7000.0
+    set run_card pdlabel lhapdf 
+    set run_card lhaid 260000  #NNPDF30_nlo_as_0118
+
+    set run_card ihtmin 850
+    ```
+    * process card:
+    ```
+    proc_jjjb.txt
+    ```
+
+
+
+* Background ($t\bar{t}$ )   
+    * process:   
+    ```
+    define p = p b b~
+    define j = j b b~
+
+    generate p p > t t~, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j) @0
+    add process p p > t t~ j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j)  @1
+    add process p p > t t~ j j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j)  @2
+    ```  
+    
+    * run_card setting:
+    ```
+    set run_card nevents 100000
+    set run_card ebeam1 7000.0
+    set run_card ebeam2 7000.0
+    set run_card pdlabel lhapdf 
+    set run_card lhaid 247000  #NNPDF23_lo_as_0130_qed
+    set run_card ickkw 1 #MLM
+    set run_card xqcut 20.0
+    ```
+    * process card:
+    ```
+    proc_ttbar.txt
     ```
