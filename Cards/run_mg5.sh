@@ -15,29 +15,28 @@ mcdatapath="/home/u5/THDM"
 
 echo "Start Running"
 
-i=1
-while [ $i != 2 ]
+i=6
+while [ $i != 11 ]
 do
    echo i=$i
 
    date +"%Y %b %m"
    date +"%r"
    
-   # echo "PP H hh"
-   # python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppHhh.txt > $outpath/proc_ppHhh_"$i".log 
+   echo "PP H hh"
+   python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppHhh.txt > $outpath/proc_ppHhh_"$i".log 
 
-   # echo "ttbar"
-   # python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ttbar.txt > $outpath/proc_ttbar_"$i".log
+   echo "ttbar"
+   python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ttbar.txt > $outpath/proc_ttbar_"$i".log
    
-   # echo "ppbbbb"
-   # python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppbbbb.txt > $outpath/proc_ppbbbb_"$i".log   
+   echo "ppbbbb"
+   python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppbbbb.txt > $outpath/proc_ppbbbb_"$i".log   
    
-   # echo "ppjjjj"
-   # python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppjjjj.txt > $outpath/proc_ppjjjj_"$i".log
+   echo "ppjjjj"
+   python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_ppjjjj.txt > $outpath/proc_ppjjjj_"$i".log
    
-   
-    echo "PP jjjb"
-    python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_jjjb.txt > $outpath/proc_ppjjjb_"$i".log
+   echo "PP jjjb"
+   python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $cardpath/proc_jjjb.txt > $outpath/proc_ppjjjb_"$i".log
 
    
    date +"%Y %b %m"
