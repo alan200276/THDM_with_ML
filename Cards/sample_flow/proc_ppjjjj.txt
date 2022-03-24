@@ -20,7 +20,7 @@ done
 /home/alan/ML_Analysis/THDM/Cards/delphes_card_HLLHC.tcl
 
 
-set run_card nevents 1000
+set run_card nevents 10000
 set run_card ebeam1 7000.0
 set run_card ebeam2 7000.0
 set run_card pdlabel lhapdf 
