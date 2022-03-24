@@ -19,19 +19,18 @@ rand="$rand"1
 
 echo "Random Seed =  $rand "
 
-sed -i -e "s/randomseed/"$rand"/g" $mg5cardpath/proc_ppjjjj.txt 
+cp $mg5cardpath/proc_ppjjjj.txt  $mg5cardpath/proc_ppjjjj_"$rand".txt 
 
-python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $mg5cardpath/proc_ppjjjj.txt > $outpath/proc_ppjjjj_"$rand".log
+sed -i -e "s/randomseed/"$rand"/g" $mg5cardpath/proc_ppjjjj_"$rand".txt 
 
-sed -i -e "s/"$rand"/randomseed/g" $mg5cardpath/proc_ppjjjj.txt 
+python /root/MG5_aMC_v2_7_3/bin/mg5_aMC $mg5cardpath/proc_ppjjjj_"$rand".txt  > $outpath/proc_ppjjjj_"$rand".log
 
-rm -rf $mcdatapath/proc_*/Events/run_*/*.hepmc.gz
-
+sed -i -e "s/"$rand"/randomseed/g" $mg5cardpath/proc_ppjjjj_"$rand".txt 
 
 
 # Downsize Part
 
-python3 $preprocesspath/downsize.py $mcdatapath/proc_jjjj_"$rand"/Events/run_01/tag_1_delphes_events.root ppjjjj $downsizesavepath  $rand >  $outpath/ppjjjj_downsize_"$rand".log
+python3 $preprocesspath/downsize.py $mcdatapath/proc_ppjjjj_"$rand"/Events/run_01/tag_1_delphes_events.root ppjjjj $downsizesavepath  $rand >  $outpath/ppjjjj_downsize_"$rand".log
 
 
 
@@ -40,8 +39,8 @@ python3 $preprocesspath/downsize.py $mcdatapath/proc_jjjj_"$rand"/Events/run_01/
 python3 $preprocesspath/preprocess_sample_flow.py $downsizesavepath/EventList_ppjjjj_"$rand".h5 ppjjjj $rand > $outpath/ppjjjj_preprocess_"$rand".log
 
 
-
-rm -rf $mcdatapath/proc_*
+rm -rf $mg5cardpath/proc_ppjjjj_"$rand".txt 
+rm -rf $mcdatapath/proc_ppjjjj_"$rand"
 
 echo "Finish"
 
