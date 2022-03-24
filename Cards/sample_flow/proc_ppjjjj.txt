@@ -1,0 +1,40 @@
+define p = p b b~
+define j = j b b~
+
+generate p p > j j j j
+
+
+output /home/u5/THDM/sample_flow/proc_jjjj_randomseed
+
+launch /home/u5/THDM/sample_flow/proc_jjjj_randomseed
+
+
+
+shower=Pythia8
+detector=Delphes
+analysis=OFF
+madspin=OFF
+done
+
+
+/home/alan/ML_Analysis/THDM/Cards/delphes_card_HLLHC.tcl
+
+
+set run_card nevents 1000
+set run_card ebeam1 7000.0
+set run_card ebeam2 7000.0
+set run_card pdlabel lhapdf 
+set run_card lhaid 247000  #NNPDF23_lo_as_0130_qed
+set iseed randomseed
+
+set run_card ihtmin 850
+
+
+##2021/8/10 modified 
+#set run_card ptj1min 500
+#set run_card ptj2min 500
+#set run_card ptj3min 500
+#set run_card ptj4min 500
+
+
+done
