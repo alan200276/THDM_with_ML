@@ -77,7 +77,9 @@ for element in process:
     total_length = 0
     folder_index = 0
     
-        
+    for_dict_image = []
+    for_dict_label = []
+
     for i, (leadingjet_path, subleadingjet_path, rotated_eventpath) in enumerate(zip(process[element][0],process[element][1],process[element][2])):  
 
         leadingjetimages = np.load(leadingjet_path)["jet_images"]
@@ -97,19 +99,20 @@ for element in process:
         logging.info("Storing Each Image")
         logging.info("\r")
 
-        for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages)): 
+        for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages))): 
             
             if total_length%25000 == 0 :
                 folder_index += 1
 
-                if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
-                    os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
+            if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
+                os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
 
-                jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
-                logging.info("\n")
-                logging.info("folder index = {}".format( folder_index))
-                logging.info("jet_filepath= {}".format(jet_filepath))
-                logging.info("\n")
+            jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
+            logging.info("\n")
+            logging.info("folder index = {}".format( folder_index))
+            logging.info("jet_filepath= {}".format(jet_filepath))
+            logging.info("\n")
+
             np.savez_compressed(jet_filepath+"/x_"+str(total_length)+".npz", 
                                 leading_jet_image = leadingjetimage, 
                                 subleading_jet_image = subleadingjetimage, 
@@ -117,14 +120,24 @@ for element in process:
                                 label=label,
                                 index = total_length
                                 )
+
+            for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(total_length)+".npz")
+            for_dict_label.append(label)
+
             total_length += 1
             
-                    logging.info("total_length: {}".format(total_length))
-            
-                    if total_length == 5:
-                        break
-                    
-    break
+            logging.info("total_length: {}".format(total_length))
+    
+        #     if total_length == 5:
+        #         break
+        # break
+
+    dict_pd = pd.DataFrame()
+    dict_pd["Image"] = for_dict_image
+    dict_pd["Y"] = for_dict_label
+    dict_pd.to_csv(savepath + str("Image_Directory") + "/" + str(element) + "_dict.csv", index = 0)
+
+    # break
 
 
 
