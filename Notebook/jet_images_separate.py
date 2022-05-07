@@ -143,7 +143,13 @@ index_dict = {"ppHhh" : sig_ppHhh_index,
               "ppbbbb" : bkg_ppbbbb_index,
               "ppjjjb" : bkg_ppjjjb_index,
               "ppjjjj" : bkg_ppjjjj_index,
+            }
 
+length = {"ppHhh" : len(sig_ppHhh),
+              "ttbar" : len(bkg_ttbar),
+              "ppbbbb" : len(bkg_ppbbbb),
+              "ppjjjb" : len(bkg_ppjjjb),
+              "ppjjjj" : len(bkg_ppjjjj),
             }
 
 
@@ -190,9 +196,50 @@ for element in process:
         """
         logging.info("Storing Each Image")
         logging.info("\r")
-
-        for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages))): 
+        ############################################################################################################
+        # for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages))): 
             
+        #     if (total_length not in index_dict[element]):
+        #         total_length += 1
+        #         continue
+
+        #     if file_index%25000 == 0 :
+        #         folder_index += 1
+
+        #     if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
+        #         os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
+
+        #     jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
+        #     logging.info("\n")
+        #     logging.info("folder index = {}".format( folder_index))
+        #     logging.info("jet_filepath= {}".format(jet_filepath))
+        #     logging.info("\n")
+
+        #     np.savez_compressed(jet_filepath+"/x_"+str(file_index)+".npz", 
+        #                         leading_jet_image = leadingjetimage, 
+        #                         subleading_jet_image = subleadingjetimage, 
+        #                         rotated_event_image = rotated_eventimage, 
+        #                         label=label,
+        #                         index = file_index
+        #                         )
+
+        #     for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(file_index)+".npz")
+        #     for_dict_label.append(label)
+        #     for_dict_index.append(total_length)
+            
+        #     logging.info("total_length: {}".format(total_length))
+        #     logging.info("file_index: {}".format(file_index))
+
+        #     total_length += 1
+        #     file_index += 1
+        ############################################################################################################
+        #     if total_length == 10:
+        #         break
+        # break
+
+        ############################################################################################################
+        for j in range(length[element]):
+
             if (total_length not in index_dict[element]):
                 total_length += 1
                 continue
@@ -200,46 +247,24 @@ for element in process:
             if file_index%25000 == 0 :
                 folder_index += 1
 
-            if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
-                os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
-
-            jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
-            logging.info("\n")
-            logging.info("folder index = {}".format( folder_index))
-            logging.info("jet_filepath= {}".format(jet_filepath))
-            logging.info("\n")
-
-            np.savez_compressed(jet_filepath+"/x_"+str(file_index)+".npz", 
-                                leading_jet_image = leadingjetimage, 
-                                subleading_jet_image = subleadingjetimage, 
-                                rotated_event_image = rotated_eventimage, 
-                                label=label,
-                                index = file_index
-                                )
-
-            for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(total_length)+".npz")
+            for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(file_index)+".npz")
             for_dict_label.append(label)
-            for_dict_index.append(file_index)
+            for_dict_index.append(total_length)
             
             logging.info("total_length: {}".format(total_length))
             logging.info("file_index: {}".format(file_index))
 
             total_length += 1
             file_index += 1
-    
-        #     if total_length == 10:
-        #         break
-        # break
+        ############################################################################################################
 
     dict_pd = pd.DataFrame()
     dict_pd["Image"] = for_dict_image
     dict_pd["Y"] = for_dict_label
-    dict_pd["File_index"] = for_dict_index
+    dict_pd["index"] = for_dict_index
     dict_pd.to_csv(savepath + str("Image_Directory") + "/" + str(element) + "_dict.csv", index = 0)
 
     # break
-
-
 
 
 final = time.time()
