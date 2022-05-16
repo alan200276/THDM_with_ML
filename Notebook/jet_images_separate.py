@@ -74,7 +74,7 @@ def Preselection(data : pd.DataFrame)-> pd.DataFrame:
 
 
 #%%
-path = "/home/u5/THDM/Data_High_Level_Features/"
+path = "/home/u5/THDM/"
 
 
 sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
@@ -102,52 +102,86 @@ nonrotated_event_imagespath =  HOMEPATH + "NonRotated_Event_Images/"
 savepath = HOMEPATH
 
 
-process_path_ppHhh = sorted(glob.glob(path+"ppHhh"+"*.csv"))
-process_path_ttbar = sorted(glob.glob(path+"ttbar"+"*.csv"))
-process_path_ppbbbb = sorted(glob.glob(path+"ppbbbb"+"*.csv"))
-process_path_jjjb = sorted(glob.glob(path+"ppjjjb"+"*.csv"))
-process_path_jjjj = sorted(glob.glob(path+"ppjjjj"+"*.csv"))
+process_path_ppHhh_csv = sorted(glob.glob(path+"ppHhh"+"*.csv"))
+process_path_ttbar_csv = sorted(glob.glob(path+"ttbar"+"*.csv"))
+process_path_ppbbbb_csv = sorted(glob.glob(path+"ppbbbb"+"*.csv"))
+process_path_jjjb_csv = sorted(glob.glob(path+"ppjjjb"+"*.csv"))
+process_path_jjjj_csv = sorted(glob.glob(path+"ppjjjj"+"*.csv"))
 # process_path_jjjj_2 = []
 process_path_jjjj_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Level_Features/ppjjjj"+"*.csv"))
-process_path_jjjj.extend(process_path_jjjj_2)
-
-process_path_ppHhh_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppHhh"+"*.npz"))
-process_path_ttbar_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ttbar"+"*.npz"))
-process_path_ppbbbb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppbbbb"+"*.npz"))
-process_path_jjjb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjb"+"*.npz"))
-process_path_jjjj_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjj"+"*.npz"))
-process_path_jjjj_leadingjet_2 = []
-process_path_jjjj_leadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Leading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
-process_path_jjjj_leadingjet.extend(process_path_jjjj_leadingjet_2)
-
-process_path_ppHhh_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppHhh"+"*.npz"))
-process_path_ttbar_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ttbar"+"*.npz"))
-process_path_ppbbbb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppbbbb"+"*.npz"))
-process_path_jjjb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjb"+"*.npz"))
-process_path_jjjj_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjj"+"*.npz"))
-process_path_jjjj_subleadingjet_2 = []
-process_path_jjjj_subleadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/SubLeading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
-process_path_jjjj_subleadingjet.extend(process_path_jjjj_subleadingjet_2)
-
-
-process_path_ppHhh_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppHhh"+"*.npz"))
-process_path_ttbar_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ttbar"+"*.npz"))
-process_path_ppbbbb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppbbbb"+"*.npz"))
-process_path_jjjb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjb"+"*.npz"))
-process_path_jjjj_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjj"+"*.npz"))
-process_path_jjjj_rotated_event_2 = []
-process_path_jjjj_rotated_event_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Rotated_Event_Images/ppjjjj"+"*.npz"))
-process_path_jjjj_rotated_event.extend(process_path_jjjj_rotated_event_2)
+process_path_jjjj_csv.extend(process_path_jjjj_2)
 
 
 process = {
-            "ppHhh" : [process_path_ppHhh_leadingjet, process_path_ppHhh_subleadingjet, process_path_ppHhh_rotated_event],
-            "ttbar" : [process_path_ttbar_leadingjet, process_path_ttbar_subleadingjet, process_path_ttbar_rotated_event],
-            "ppbbbb" : [process_path_ppbbbb_leadingjet, process_path_ppbbbb_subleadingjet, process_path_ppbbbb_rotated_event],
-            "ppjjjb" : [process_path_jjjb_leadingjet, process_path_jjjb_subleadingjet, process_path_jjjb_rotated_event],
-            "ppjjjj" : [process_path_jjjj_leadingjet, process_path_jjjj_subleadingjet, process_path_jjjj_rotated_event]
+            "ppHhh" : [[], [] , [], process_path_ppHhh_csv],
+            "ttbar" : [[], [] , [], process_path_ttbar_csv],
+            "ppbbbb" : [[], [] , [], process_path_ppbbbb_csv],
+            "ppjjjb" : [[], [] , [], process_path_jjjb_csv],
+            "ppjjjj" : [[], [] , [], process_path_jjjj_csv],
         }  
+for pro in process:
+    if pro == "ppjjjj":
+        tmp = []
+        for subpath in process[pro][3]:
+            tmp.append(subpath.split("_")[-1].split(".")[-2])
+        
+        for i, file_number in enumerate(tmp):
+            if i < 20:
+                process[pro][0].append(leadingjet_imagespath+str(pro)+"_"+str(file_number)+"_trimmed.npz")
+                process[pro][1].append(subleadingjet_imagespath+str(pro)+"_"+str(file_number)+"_trimmed.npz")
+                process[pro][2].append(rotated_event_imagespath+str(pro)+"_"+str(file_number)+".npz")
+            else:
+                process[pro][0].append("/home/u5/THDM/sample_flow/Leading_Jet_Images_trimmed/ppjjjj_"+str(file_number)+"_trimmed.npz")
+                process[pro][1].append("/home/u5/THDM/sample_flow/SubLeading_Jet_Images_trimmed/ppjjjj_"+str(file_number)+"_trimmed.npz")
+                process[pro][2].append("/home/u5/THDM/sample_flow/Rotated_Event_Images/ppjjjj_"+str(file_number)+".npz")
+    else:
+        tmp = []
+        for subpath in process[pro][3]:
+            tmp.append(subpath.split("_")[-1].split(".")[-2])
+        
+        for i, file_number in enumerate(tmp):
+            process[pro][0].append(leadingjet_imagespath+str(pro)+"_"+str(file_number)+"_trimmed.npz")
+            process[pro][1].append(subleadingjet_imagespath+str(pro)+"_"+str(file_number)+"_trimmed.npz")
+            process[pro][2].append(rotated_event_imagespath+str(pro)+"_"+str(file_number)+".npz")
 
+# process_path_ppHhh_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppHhh"+"*.npz"))
+# process_path_ttbar_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ttbar"+"*.npz"))
+# process_path_ppbbbb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppbbbb"+"*.npz"))
+# process_path_jjjb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjb"+"*.npz"))
+# process_path_jjjj_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjj"+"*.npz"))
+# process_path_jjjj_leadingjet_2 = []
+# process_path_jjjj_leadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Leading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
+# process_path_jjjj_leadingjet.extend(process_path_jjjj_leadingjet_2)
+
+# process_path_ppHhh_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppHhh"+"*.npz"))
+# process_path_ttbar_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ttbar"+"*.npz"))
+# process_path_ppbbbb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppbbbb"+"*.npz"))
+# process_path_jjjb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjb"+"*.npz"))
+# process_path_jjjj_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjj"+"*.npz"))
+# process_path_jjjj_subleadingjet_2 = []
+# process_path_jjjj_subleadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/SubLeading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
+# process_path_jjjj_subleadingjet.extend(process_path_jjjj_subleadingjet_2)
+
+
+# process_path_ppHhh_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppHhh"+"*.npz"))
+# process_path_ttbar_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ttbar"+"*.npz"))
+# process_path_ppbbbb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppbbbb"+"*.npz"))
+# process_path_jjjb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjb"+"*.npz"))
+# process_path_jjjj_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjj"+"*.npz"))
+# process_path_jjjj_rotated_event_2 = []
+# process_path_jjjj_rotated_event_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Rotated_Event_Images/ppjjjj"+"*.npz"))
+# process_path_jjjj_rotated_event.extend(process_path_jjjj_rotated_event_2)
+
+
+# process = {
+#             "ppHhh" : [process_path_ppHhh_leadingjet, process_path_ppHhh_subleadingjet, process_path_ppHhh_rotated_event],
+#             "ttbar" : [process_path_ttbar_leadingjet, process_path_ttbar_subleadingjet, process_path_ttbar_rotated_event],
+#             "ppbbbb" : [process_path_ppbbbb_leadingjet, process_path_ppbbbb_subleadingjet, process_path_ppbbbb_rotated_event],
+#             "ppjjjb" : [process_path_jjjb_leadingjet, process_path_jjjb_subleadingjet, process_path_jjjb_rotated_event],
+#             "ppjjjj" : [process_path_jjjj_leadingjet, process_path_jjjj_subleadingjet, process_path_jjjj_rotated_event]
+#         }  
+
+#%%
 index_dict = {"ppHhh" : sig_ppHhh_index,
               "ttbar" : bkg_ttbar_index,
               "ppbbbb" : bkg_ppbbbb_index,
@@ -169,8 +203,8 @@ for element in process:
     logging.info("\n")
 
 
-    if element == "ppjjjj":
-        continue
+    # if element == "ppjjjj":
+    #     continue
 
     if element == "ppHhh": #ppHhh event
         label = 0
@@ -286,20 +320,9 @@ for element in process:
 
 final = time.time()
 logging.info("total time: {:.3f} min".format((final-start)/60))
+
 # %%
 
-# # %%
-# process = {
-#             "ppHhh" : [process_path_ppHhh_leadingjet, process_path_ppHhh_subleadingjet, process_path_ppHhh_rotated_event, process_path_ppHhh],
-#             "ttbar" : [process_path_ttbar_leadingjet, process_path_ttbar_subleadingjet, process_path_ttbar_rotated_event, process_path_ttbar],
-#             "ppbbbb" : [process_path_ppbbbb_leadingjet, process_path_ppbbbb_subleadingjet, process_path_ppbbbb_rotated_event, process_path_ppbbbb],
-#             "ppjjjb" : [process_path_jjjb_leadingjet, process_path_jjjb_subleadingjet, process_path_jjjb_rotated_event, process_path_jjjb],
-#             "ppjjjj" : [process_path_jjjj_leadingjet, process_path_jjjj_subleadingjet, process_path_jjjj_rotated_event, process_path_jjjj]
-#         }  
-
-
-
-# import re
 # list_leading = []
 # list_subleading = []
 # list_event = []
@@ -311,7 +334,7 @@ logging.info("total time: {:.3f} min".format((final-start)/60))
 # for rotated_eventpath in process["ppjjjj"][2]:  
 #     list_event.append(rotated_eventpath.split("_")[-1].split(".")[-2])
 
-# for aaaa in process["ppjjjj"][3][1:]:  
+# for aaaa in process["ppjjjj"][3]:  
 #     list_csv.append(aaaa.split("_")[-1].split(".")[-2])
 #     # break
 # # %%
