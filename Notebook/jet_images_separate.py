@@ -101,6 +101,16 @@ rotated_event_imagespath =  HOMEPATH + "Rotated_Event_Images/"
 nonrotated_event_imagespath =  HOMEPATH + "NonRotated_Event_Images/"
 savepath = HOMEPATH
 
+
+process_path_ppHhh = sorted(glob.glob(path+"ppHhh"+"*.csv"))
+process_path_ttbar = sorted(glob.glob(path+"ttbar"+"*.csv"))
+process_path_ppbbbb = sorted(glob.glob(path+"ppbbbb"+"*.csv"))
+process_path_jjjb = sorted(glob.glob(path+"ppjjjb"+"*.csv"))
+process_path_jjjj = sorted(glob.glob(path+"ppjjjj"+"*.csv"))
+# process_path_jjjj_2 = []
+process_path_jjjj_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Level_Features/ppjjjj"+"*.csv"))
+process_path_jjjj.extend(process_path_jjjj_2)
+
 process_path_ppHhh_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppHhh"+"*.npz"))
 process_path_ttbar_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ttbar"+"*.npz"))
 process_path_ppbbbb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppbbbb"+"*.npz"))
@@ -110,11 +120,11 @@ process_path_jjjj_leadingjet_2 = []
 process_path_jjjj_leadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Leading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
 process_path_jjjj_leadingjet.extend(process_path_jjjj_leadingjet_2)
 
-process_path_ppHhh_subleadingjet = sorted(glob.glob(leadingjet_imagespath+"ppHhh"+"*.npz"))
-process_path_ttbar_subleadingjet = sorted(glob.glob(leadingjet_imagespath+"ttbar"+"*.npz"))
-process_path_ppbbbb_subleadingjet = sorted(glob.glob(leadingjet_imagespath+"ppbbbb"+"*.npz"))
-process_path_jjjb_subleadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjb"+"*.npz"))
-process_path_jjjj_subleadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjj"+"*.npz"))
+process_path_ppHhh_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppHhh"+"*.npz"))
+process_path_ttbar_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ttbar"+"*.npz"))
+process_path_ppbbbb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppbbbb"+"*.npz"))
+process_path_jjjb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjb"+"*.npz"))
+process_path_jjjj_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjj"+"*.npz"))
 process_path_jjjj_subleadingjet_2 = []
 process_path_jjjj_subleadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/SubLeading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
 process_path_jjjj_subleadingjet.extend(process_path_jjjj_subleadingjet_2)
@@ -157,6 +167,11 @@ length = {"ppHhh" : len(sig_ppHhh),
 for element in process:
     logging.info("Process is {}".format(element))
     logging.info("\n")
+
+
+    if element == "ppjjjj":
+        continue
+
     if element == "ppHhh": #ppHhh event
         label = 0
     elif  element == "ttbar": #ttbar event
@@ -170,6 +185,8 @@ for element in process:
     else:
         continue
     
+
+
     total_length = 0
     folder_index = 0
     file_index = 0
@@ -197,55 +214,31 @@ for element in process:
         logging.info("Storing Each Image")
         logging.info("\r")
         ############################################################################################################
-        # for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages))): 
+        for j, (leadingjetimage, subleadingjetimage, rotated_eventimage) in enumerate(tqdm(zip(leadingjetimages,subleadingjetimages,rotated_eventimages))): 
             
-        #     if (total_length not in index_dict[element]):
-        #         total_length += 1
-        #         continue
-
-        #     if file_index%25000 == 0 :
-        #         folder_index += 1
-
-        #     if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
-        #         os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
-
-        #     jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
-        #     logging.info("\n")
-        #     logging.info("folder index = {}".format( folder_index))
-        #     logging.info("jet_filepath= {}".format(jet_filepath))
-        #     logging.info("\n")
-
-        #     np.savez_compressed(jet_filepath+"/x_"+str(file_index)+".npz", 
-        #                         leading_jet_image = leadingjetimage, 
-        #                         subleading_jet_image = subleadingjetimage, 
-        #                         rotated_event_image = rotated_eventimage, 
-        #                         label=label,
-        #                         index = file_index
-        #                         )
-
-        #     for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(file_index)+".npz")
-        #     for_dict_label.append(label)
-        #     for_dict_index.append(total_length)
-            
-        #     logging.info("total_length: {}".format(total_length))
-        #     logging.info("file_index: {}".format(file_index))
-
-        #     total_length += 1
-        #     file_index += 1
-        ############################################################################################################
-        #     if total_length == 10:
-        #         break
-        # break
-
-        ############################################################################################################
-        for j in range(length[element]):
-
             if (total_length not in index_dict[element]):
                 total_length += 1
                 continue
 
             if file_index%25000 == 0 :
                 folder_index += 1
+
+            if os.path.exists(savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)) == 0:
+                os.mkdir(savepath + str("Image_Directory") + "/" + str(element) + "_" +str(folder_index))
+
+            jet_filepath = savepath + str("Image_Directory") + "/" + str(element) + "_" + str(folder_index)
+            logging.info("\n")
+            logging.info("folder index = {}".format( folder_index))
+            logging.info("jet_filepath= {}".format(jet_filepath))
+            logging.info("\n")
+
+            np.savez_compressed(jet_filepath+"/x_"+str(file_index)+".npz", 
+                                leading_jet_image = leadingjetimage, 
+                                subleading_jet_image = subleadingjetimage, 
+                                rotated_event_image = rotated_eventimage, 
+                                label=label,
+                                index = total_length
+                                )
 
             for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(file_index)+".npz")
             for_dict_label.append(label)
@@ -256,6 +249,30 @@ for element in process:
 
             total_length += 1
             file_index += 1
+        ############################################################################################################
+        #     if total_length == 10:
+        #         break
+        # break
+
+        ############################################################################################################
+        # for j in range(length[element]):
+
+        #     if (total_length not in index_dict[element]):
+        #         total_length += 1
+        #         continue
+
+        #     if file_index%25000 == 0 :
+        #         folder_index += 1
+
+        #     for_dict_image.append(str(element) + "_" + str(folder_index)+"/x_"+str(file_index)+".npz")
+        #     for_dict_label.append(label)
+        #     for_dict_index.append(total_length)
+            
+        #     logging.info("total_length: {}".format(total_length))
+        #     logging.info("file_index: {}".format(file_index))
+
+        #     total_length += 1
+        #     file_index += 1
         ############################################################################################################
 
     dict_pd = pd.DataFrame()
@@ -270,3 +287,58 @@ for element in process:
 final = time.time()
 logging.info("total time: {:.3f} min".format((final-start)/60))
 # %%
+
+# # %%
+# process = {
+#             "ppHhh" : [process_path_ppHhh_leadingjet, process_path_ppHhh_subleadingjet, process_path_ppHhh_rotated_event, process_path_ppHhh],
+#             "ttbar" : [process_path_ttbar_leadingjet, process_path_ttbar_subleadingjet, process_path_ttbar_rotated_event, process_path_ttbar],
+#             "ppbbbb" : [process_path_ppbbbb_leadingjet, process_path_ppbbbb_subleadingjet, process_path_ppbbbb_rotated_event, process_path_ppbbbb],
+#             "ppjjjb" : [process_path_jjjb_leadingjet, process_path_jjjb_subleadingjet, process_path_jjjb_rotated_event, process_path_jjjb],
+#             "ppjjjj" : [process_path_jjjj_leadingjet, process_path_jjjj_subleadingjet, process_path_jjjj_rotated_event, process_path_jjjj]
+#         }  
+
+
+
+# import re
+# list_leading = []
+# list_subleading = []
+# list_event = []
+# list_csv = []
+# for leadingjet_path in process["ppjjjj"][0]:  
+#     list_leading.append(leadingjet_path.split("_")[-2])
+# for subleadingjet_path in process["ppjjjj"][1]:  
+#     list_subleading.append(subleadingjet_path.split("_")[-2])
+# for rotated_eventpath in process["ppjjjj"][2]:  
+#     list_event.append(rotated_eventpath.split("_")[-1].split(".")[-2])
+
+# for aaaa in process["ppjjjj"][3][1:]:  
+#     list_csv.append(aaaa.split("_")[-1].split(".")[-2])
+#     # break
+# # %%
+# # list_leading = np.sort(np.array(list_leading))
+# # list_subleading = np.sort(np.array(list_subleading))
+# # list_event = np.sort(np.array(list_event))
+# list_leading = np.array(list_leading)
+# list_subleading = np.array(list_subleading)
+# list_event = np.array(list_event)
+# list_csv = np.array(list_csv)
+
+# # %%
+# for i, element in enumerate(list_leading):
+#     if element != list_subleading[i]:
+#         print(element)
+
+# # %%
+# for i, element in enumerate(list_leading):
+#     if element != list_event[i]:
+#         print(i, element)
+# # %%
+# for i, element in enumerate(list_event):
+#     if element != list_leading[i]:
+#         print(i, element)
+# # %%
+# for i, element in enumerate(list_csv):
+#     if element != list_subleading[i]:
+#         print("csv", i, element)
+#         print("subleading", i, list_subleading[i])
+# # %%
