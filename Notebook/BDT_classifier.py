@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #%%
 import numpy as np
 import pandas as pd
@@ -35,97 +36,22 @@ from sklearn.model_selection import train_test_split
 from joblib import dump, load
 
 
+"""
+Self-define Function
+"""
+from function import High_Level_Features
+from function import Basic_Preselection
 #%%
-def High_Level_Features(csv_file=[]):
-    
-    if len(csv_file) < 1:
-        raise ValueError("Please check high-level features files!!")
-        
-    high_level_feature = pd.read_csv(csv_file[0])
-
-    for i, file in enumerate(csv_file):
-        if i == 0:
-            continue
-        else:
-            dataframe = pd.read_csv(file)
-            
-            high_level_feature = pd.concat([high_level_feature, dataframe], ignore_index=True, axis=0,join='inner')
-            
-    
-    logging.info( "\033[3;43m Total File Length: {} \033[0;m".format(len(high_level_feature)))
-    logging.info("\r")
-    
-    return high_level_feature
-
-
-def Preselection(data : pd.DataFrame)-> pd.DataFrame:
-    def ET(pt, m):
-        ET = np.sqrt(m**2 + pt**2)
-        return  ET
-
-    def XHH(jet1_mass, jet2_mass):
-        m1, m2 = jet1_mass, jet2_mass
-        XHH = np.sqrt( ((m1-124)/(0.1*(m1+1e-5)))**2 +  ((m2-115)/(0.1*(m2+1e-5)))**2 )
-        return  np.nan_to_num(XHH)
-
-    """
-    Mass Cut and PT cut
-    """
-    data["ET"] = ET(data["PTJ1_0"], data["MJ1_0"])
-
-    data["Xhh_0"] = XHH(data["MJ1_0"], data["MJ2_0"])
-    data["Xhh"] = XHH(data["MJ1"], data["MJ2"])
-
-    """
-    Trigger
-    """
-    data = data[(data["ET"] > 420) & (data["MJ1_0"] > 35)]
-
-    """
-    PT(J1) > 450 GeV 
-    """
-
-    data = data[(data["PTJ1"] > 450)]
-
-
-    # """
-    # PT(J1) > 325 GeV (for M(H)=800)
-    # """
-
-    # data = data[(data["PTJ1_0"] > 325)] 
-
-    """
-    PT(J2) > 250 GeV 
-    """
-
-    data = data[(data["PTJ2"] > 250)]
-
-    """
-    |Eta(J1)| < 2 & |Eta(J2)| < 2 
-    """
-
-    data = data[(abs(data["eta1"]) < 2) & (abs(data["eta2"]) < 2)]
-
-    """
-    M(J1) > 50 GeV &  M(J2) > 50 GeV
-    """
-
-    data = data[(data["MJ1"] > 50) & (data["MJ2"] > 50)]
-
-
-    return data
-
-#%%
+"""
+Collect Data Path
+"""
 path = "/home/u5/THDM/Data_High_Level_Features/"
-    
-    
+        
 """
 Signal
 """
 process_path_ppHhh = sorted(glob.glob(path+"ppHhh"+"*.csv"))
-# process_path_ppHhh = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Level_Features/ppHhh"+"*.csv"))
 
-#%%
 """
 Backgound
 """
@@ -138,32 +64,51 @@ process_path_jjjj_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Leve
 process_path_jjjj.extend(process_path_jjjj_2)
 
 #%%
-# sig_ppHhh = High_Level_Features(process_path_ppHhh)
+"""
+Load Data Individual
+"""
 
+# sig_ppHhh = High_Level_Features(process_path_ppHhh)
 # bkg_ttbar = High_Level_Features(process_path_ttbar)
 # bkg_ppbbbb = High_Level_Features(process_path_ppbbbb)
 # bkg_ppjjjb = High_Level_Features(process_path_jjjb)
 # bkg_ppjjjj = High_Level_Features(process_path_jjjj)
 
+path = "/home/u5/THDM/"
 sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
 bkg_ttbar = pd.read_csv(path+"ttbar.csv")
 bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
 bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
 bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
-#%%
-logging.info(len(sig_ppHhh))
 
-#%%
-sig_ppHhh = Preselection(sig_ppHhh)
-logging.info(len(sig_ppHhh))
-#%%
-bkg_ttbar = Preselection(bkg_ttbar)
-bkg_ppbbbb = Preselection(bkg_ppbbbb)
-bkg_ppjjjb = Preselection(bkg_ppjjjb)
-bkg_ppjjjj = Preselection(bkg_ppjjjj)
+logging.info("Before Preselection")
+logging.info("Signal(ppHhh) Length: {}".format(len(sig_ppHhh)))
+logging.info("BKG(ttabr) Length: {}".format(len(bkg_ttbar)))
+logging.info("BKG(ppbbbb) Length: {}".format(len(bkg_ppbbbb)))
+logging.info("BKG(ppjjjj) Length: {}".format(len(bkg_ppjjjj)))
 
 
 #%%
+"""
+Basic Preselection
+"""
+sig_ppHhh = Basic_Preselection(sig_ppHhh)
+bkg_ttbar = Basic_Preselection(bkg_ttbar)
+bkg_ppbbbb = Basic_Preselection(bkg_ppbbbb)
+bkg_ppjjjb = Basic_Preselection(bkg_ppjjjb)
+bkg_ppjjjj = Basic_Preselection(bkg_ppjjjj)
+
+
+logging.info("After Preselection")
+logging.info("Signal(ppHhh) Length: {}".format(len(sig_ppHhh)))
+logging.info("BKG(ttabr) Length: {}".format(len(bkg_ttbar)))
+logging.info("BKG(ppbbbb) Length: {}".format(len(bkg_ppbbbb)))
+logging.info("BKG(ppjjjj) Length: {}".format(len(bkg_ppjjjj)))
+
+#%%
+"""
+Define Label
+"""
 sig_ppHhh["label"] = np.full(len(sig_ppHhh),1)
 bkg_ttbar["label"] = np.full(len(bkg_ttbar),0)
 bkg_ppbbbb["label"] = np.full(len(bkg_ppbbbb),0)
@@ -173,24 +118,36 @@ bkg_ppjjjj["label"] = np.full(len(bkg_ppjjjj),0)
 # sig_ppHhh = shuffle(sig_ppHhh)[:312398]
 
 #%%
-
+"""
+Collect Data Together
+"""
 Data = pd.concat([sig_ppHhh, bkg_ttbar], ignore_index=True, axis=0,join='inner')
 Data = pd.concat([Data, bkg_ppbbbb], ignore_index=True, axis=0,join='inner')
 
 # %%
-Data = Preselection(Data)
+"""
+Check Data Balance
+"""
+
+Data = Basic_Preselection(Data)
 
 logging.info("\n")
 logging.info("There are {} sig and {} bkg in dataset.".format(len(Data[Data["label"]==1]),len(Data[Data["label"]!=1])))
 logging.info("\n")
 
 #%%
+"""
+Split Training and Test Dataset
+"""
 X = Data
 Y = Data["label"]
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.10, random_state=42)
 
 
 # %%
+"""
+Define Model
+"""
 def BDT_Model():
     
     rand = np.random.randint(1000000)
@@ -209,14 +166,24 @@ def BDT_Model():
     return clf_GBDT
 
 #%%
+"""
+Define Training Features
+"""
 features = ['MJJ', 'delta_eta', 'Xhh', #'XHH', 
             'MJ1','t211', 'D211', 'D221', 'C211', 'C221', 
             'MJ2','t212', 'D212', 'D222', 'C212', 'C222'
             ] 
 # %%
+"""
+Train Model
+"""
 clf_GBDT = BDT_Model()
 clf_GBDT.fit(np.asarray(X_train[features]), np.asarray(Y_train))
+
 # %%
+"""
+Test Model
+"""
 prediction_test =  clf_GBDT.predict_proba(np.asarray(X_test[features]))
 discriminator_test = prediction_test[:,1]
 # discriminator_test = discriminator_test/(max(discriminator_test))
@@ -229,12 +196,20 @@ logging.info("AUC: {}".format(auc))
 logging.info("Rejection Rate: {}".format(FalsePositiveFull[last]))
 
 #%%
+"""
+Save Model
+"""
 dump(clf_GBDT, "./clf_GBDT_1000_Xhh.h5")
 
 #%%
+"""
+Load Model
+"""
 clf_GBDT = load("./clf_GBDT_1000_Xhh.h5")
 #%%
-
+"""
+Make Prediction
+"""
 process = {
             "ppHhh" : sig_ppHhh,
             "ttbar" : bkg_ttbar,
