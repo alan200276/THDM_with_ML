@@ -97,8 +97,8 @@ The following is the procedure for installation and setting.
         mh = 125  
         mH = 1000  
         mA = 1001  
-        mHp = 1001 
-        sin(beta-alpha)= 0.99612  
+        mHp = 1001   
+        sin(beta-alpha)= 0.99612    
         lambda_6 = 0  
         lambda_7 = 0  
         m_12^2 = 400000  
