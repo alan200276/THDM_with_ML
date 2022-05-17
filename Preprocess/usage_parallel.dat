@@ -1,0 +1,1 @@
+nohup parallel -j5 -a parallel_preprocess.sh > parallel_3.log &
