@@ -14,64 +14,10 @@ import logging
 importlib.reload(logging)
 logging.basicConfig(level = logging.INFO)
 
-#%%
-def Preselection(data : pd.DataFrame)-> pd.DataFrame:
-    def ET(pt, m):
-        ET = np.sqrt(m**2 + pt**2)
-        return  ET
-
-    def XHH(jet1_mass, jet2_mass):
-        m1, m2 = jet1_mass, jet2_mass
-        XHH = np.sqrt( ((m1-124)/(0.1*(m1+1e-5)))**2 +  ((m2-115)/(0.1*(m2+1e-5)))**2 )
-        return  np.nan_to_num(XHH)
-
-    """
-    Mass Cut and PT cut
-    """
-    data["ET"] = ET(data["PTJ1_0"], data["MJ1_0"])
-
-    data["Xhh_0"] = XHH(data["MJ1_0"], data["MJ2_0"])
-    data["Xhh"] = XHH(data["MJ1"], data["MJ2"])
-
-    """
-    Trigger
-    """
-    data = data[(data["ET"] > 420) & (data["MJ1_0"] > 35)]
-
-    """
-    PT(J1) > 450 GeV 
-    """
-
-    data = data[(data["PTJ1"] > 450)]
-
-
-    # """
-    # PT(J1) > 325 GeV (for M(H)=800)
-    # """
-
-    # data = data[(data["PTJ1_0"] > 325)] 
-
-    """
-    PT(J2) > 250 GeV 
-    """
-
-    data = data[(data["PTJ2"] > 250)]
-
-    """
-    |Eta(J1)| < 2 & |Eta(J2)| < 2 
-    """
-
-    data = data[(abs(data["eta1"]) < 2) & (abs(data["eta2"]) < 2)]
-
-    """
-    M(J1) > 50 GeV &  M(J2) > 50 GeV
-    """
-
-    data = data[(data["MJ1"] > 50) & (data["MJ2"] > 50)]
-
-
-    return data
-
+"""
+Self-define Function
+"""
+from function import Basic_Preselection
 
 #%%
 path = "/home/u5/THDM/"
@@ -83,11 +29,11 @@ bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
 bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
 bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
 
-sig_ppHhh_index = Preselection(sig_ppHhh).index
-bkg_ttbar_index = Preselection(bkg_ttbar).index
-bkg_ppbbbb_index = Preselection(bkg_ppbbbb).index
-bkg_ppjjjb_index = Preselection(bkg_ppjjjb).index
-bkg_ppjjjj_index = Preselection(bkg_ppjjjj).index
+sig_ppHhh_index = Basic_Preselection(sig_ppHhh).index
+bkg_ttbar_index = Basic_Preselection(bkg_ttbar).index
+bkg_ppbbbb_index = Basic_Preselection(bkg_ppbbbb).index
+bkg_ppjjjb_index = Basic_Preselection(bkg_ppjjjb).index
+bkg_ppjjjj_index = Basic_Preselection(bkg_ppjjjj).index
 
 
 #%%
@@ -144,43 +90,6 @@ for pro in process:
             process[pro][1].append(subleadingjet_imagespath+str(pro)+"_"+str(file_number)+"_trimmed.npz")
             process[pro][2].append(rotated_event_imagespath+str(pro)+"_"+str(file_number)+".npz")
 
-# process_path_ppHhh_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppHhh"+"*.npz"))
-# process_path_ttbar_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ttbar"+"*.npz"))
-# process_path_ppbbbb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppbbbb"+"*.npz"))
-# process_path_jjjb_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjb"+"*.npz"))
-# process_path_jjjj_leadingjet = sorted(glob.glob(leadingjet_imagespath+"ppjjjj"+"*.npz"))
-# process_path_jjjj_leadingjet_2 = []
-# process_path_jjjj_leadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Leading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
-# process_path_jjjj_leadingjet.extend(process_path_jjjj_leadingjet_2)
-
-# process_path_ppHhh_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppHhh"+"*.npz"))
-# process_path_ttbar_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ttbar"+"*.npz"))
-# process_path_ppbbbb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppbbbb"+"*.npz"))
-# process_path_jjjb_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjb"+"*.npz"))
-# process_path_jjjj_subleadingjet = sorted(glob.glob(subleadingjet_imagespath+"ppjjjj"+"*.npz"))
-# process_path_jjjj_subleadingjet_2 = []
-# process_path_jjjj_subleadingjet_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/SubLeading_Jet_Images_trimmed/ppjjjj"+"*.npz"))
-# process_path_jjjj_subleadingjet.extend(process_path_jjjj_subleadingjet_2)
-
-
-# process_path_ppHhh_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppHhh"+"*.npz"))
-# process_path_ttbar_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ttbar"+"*.npz"))
-# process_path_ppbbbb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppbbbb"+"*.npz"))
-# process_path_jjjb_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjb"+"*.npz"))
-# process_path_jjjj_rotated_event = sorted(glob.glob(rotated_event_imagespath+"ppjjjj"+"*.npz"))
-# process_path_jjjj_rotated_event_2 = []
-# process_path_jjjj_rotated_event_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Rotated_Event_Images/ppjjjj"+"*.npz"))
-# process_path_jjjj_rotated_event.extend(process_path_jjjj_rotated_event_2)
-
-
-# process = {
-#             "ppHhh" : [process_path_ppHhh_leadingjet, process_path_ppHhh_subleadingjet, process_path_ppHhh_rotated_event],
-#             "ttbar" : [process_path_ttbar_leadingjet, process_path_ttbar_subleadingjet, process_path_ttbar_rotated_event],
-#             "ppbbbb" : [process_path_ppbbbb_leadingjet, process_path_ppbbbb_subleadingjet, process_path_ppbbbb_rotated_event],
-#             "ppjjjb" : [process_path_jjjb_leadingjet, process_path_jjjb_subleadingjet, process_path_jjjb_rotated_event],
-#             "ppjjjj" : [process_path_jjjj_leadingjet, process_path_jjjj_subleadingjet, process_path_jjjj_rotated_event]
-#         }  
-
 #%%
 index_dict = {"ppHhh" : sig_ppHhh_index,
               "ttbar" : bkg_ttbar_index,
@@ -201,10 +110,6 @@ length = {"ppHhh" : len(sig_ppHhh),
 for element in process:
     logging.info("Process is {}".format(element))
     logging.info("\n")
-
-
-    # if element == "ppjjjj":
-    #     continue
 
     if element == "ppHhh": #ppHhh event
         label = 0
