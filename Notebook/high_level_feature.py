@@ -140,12 +140,12 @@ bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
 
 #%%
 process_length = {
-            "ppHhh" : len(process_path_ppHhh)*100000,
+            "ppHhh" : (len(process_path_ppHhh)-1)*100000,
             # "ppHhh" : len(process_path_ppHhh)*10000,
-            "ttbar" : len(process_path_ttbar)*100000,
-            "ppbbbb" : len(process_path_ppbbbb)*100000,
-            "ppjjjb" : len(process_path_jjjb)*100000,
-            "ppjjjj" : (len(process_path_jjjj)-len(process_path_jjjj_2))*100000+len(process_path_jjjj_2)*10000,
+            "ttbar" : (len(process_path_ppHhh)-1)*100000,
+            "ppbbbb" : (len(process_path_ppHhh)-1)*100000,
+            "ppjjjb" : (len(process_path_ppHhh)-1)*100000,
+            "ppjjjj" : (len(process_path_jjjj)-1-len(process_path_jjjj_2))*100000+len(process_path_jjjj_2)*10000,
         }  
 
 process = {
@@ -200,13 +200,14 @@ process_selected = {
 #                 }  
 
 expected_event = {
-                    "ppHhh" : (0.81186/1000)*0.8715*(0.3560**2)*139*1000*(0.77**4),
-                    # "ppHhh" : (1./1000)*139*1000*0.6*0.6*(0.77**4),
-                    "ttbar" : 260.3554*139*1000*(0.77**4)*0.27515,
+                    # "ppHhh" : (0.81186/1000)*0.8715*(0.3560**2)*139*1000*(0.77**4),
+                    "ppHhh" : (1./1000)*139*1000*0.5824*0.5824*(0.77**4),
+                    "ttbar" : 260.3554*139*1000*(0.77**4)*0.192,
+                    # "ttbar" : 225.71*139*1000*(0.77**4),*0.192,
                     "ppbbbb" : 0.4070 *139*1000,
                     "ppjjjb" : 450.04*139*1000,
-                    # "ppjjjj" : 11087.8358304*139*1000*(0.77**4)*0.02365529,
-                    "ppjjjj" : 8299*139*1000*(0.77**4)*0.02365529,
+                    "ppjjjj" : 11087.8358304*139*1000*(0.77**4)*0.015,
+                    # "ppjjjj" : 8299*139*1000*(0.77**4)*0.015,
                 }  
 
 
@@ -303,7 +304,7 @@ for j , element in enumerate(process):
     """
     
     # tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1200)]
-    tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1200)]
+    tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1100)]
     preselection["MJJ"][j] = len(tmp)/process_length[element]#/len(process[element])
 
 
@@ -336,6 +337,7 @@ for j , element in enumerate(process):
     # preselection["two_b_tag"][j] = len(tmp)/process_length[element]#/len(process[element])
     
     preselection["survival"][j] = expected_event[element]*preselection["four_b_tag"][j]
+    # preselection["survival"][j] = expected_event[element]*preselection["three_b_tag"][j]
 
     process_selected[element] = tmp
 
