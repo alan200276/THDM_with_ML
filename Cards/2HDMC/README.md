@@ -1,7 +1,7 @@
-Ref: [HiggsBounds](https://gitlab.com/higgsbounds/higgsbounds)
-Ref: [HiggsSignals](https://gitlab.com/higgsbounds/higgssignals)
-Ref: [Additional_Tools](https://gitlab.com/higgsbounds/additional_tools)
-Ref: [2HDMC - Two-Higgs-Doublet Model Calculator](https://arxiv.org/abs/0902.0851)
+Ref: [HiggsBounds](https://gitlab.com/higgsbounds/higgsbounds)  
+Ref: [HiggsSignals](https://gitlab.com/higgsbounds/higgssignals)  
+Ref: [Additional_Tools](https://gitlab.com/higgsbounds/additional_tools)  
+Ref: [2HDMC - Two-Higgs-Doublet Model Calculator](https://arxiv.org/abs/0902.0851)  
 
 
 In order to get branching ratio and corresponding paramters in $\lambda$ basis from mass basis, we can use [2HDMC](https://arxiv.org/abs/0902.0851) for calculation.   
