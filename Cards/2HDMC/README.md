@@ -102,7 +102,7 @@ The following is the procedure for installation and setting.
         lambda_6 = 0  
         lambda_7 = 0  
         m_12^2 = 400000  
-        tan_beta = 5 
+        tan_beta = 5   
         yukawas_type = 2 (Type II)  
         `
         ./CalcPhys 125 1000 1001 1001 0.99612  0 0 400000  5 2 parameters.out > THDM.log  
