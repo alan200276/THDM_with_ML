@@ -355,9 +355,9 @@ val_generator = data_generator(imagepath = ImagePath,  data_dict = test_pd, nb_s
 
 
 check_list=[]
-csv_logger = CSVLogger('/AICourse2022/alan_THDM/Model_3CNN/training_log.csv')
+csv_logger = CSVLogger('/AICourse2022/alan_THDM/Model_3CNN/training_log_500.csv')
 checkpoint = ModelCheckpoint(
-                    filepath='/AICourse2022/alan_THDM/Model_3CNN/checkmodel.h5',
+                    filepath='/AICourse2022/alan_THDM/Model_3CNN/checkmodel_500.h5',
                     save_best_only=True,
                     verbose=1)
 check_list.append(checkpoint)
@@ -366,7 +366,7 @@ check_list.append(csv_logger)
 # generator method
 history_model_3cnn = model_3cnn.fit(
                                     train_generator,
-                                    epochs= 100,
+                                    epochs= 500,
                                     steps_per_epoch= nb_train_samples // batch_size,
                                     validation_data = val_generator,
                                     validation_steps = nb_val_samples // batch_size,
@@ -385,7 +385,7 @@ history_model_3cnn = model_3cnn.fit(
 #                                     verbose=1
 #                                     )
 
-model_3cnn.save("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn.h5")
+model_3cnn.save("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500.h5")
 
 # %%
 ############################################################################################################################################################
