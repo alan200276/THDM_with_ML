@@ -74,6 +74,11 @@ Load Data Individual
 # bkg_ppjjjb = High_Level_Features(process_path_jjjb)
 # bkg_ppjjjj = High_Level_Features(process_path_jjjj)
 
+
+# path = "/home/u5/THDM/MC_Data/"
+# sig_ppHhh = pd.read_csv(path+"ppHhh_test.csv")
+# bkg_ttbar = pd.read_csv(path+"ttbar_test.csv")
+
 path = "/home/u5/THDM/"
 sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
 bkg_ttbar = pd.read_csv(path+"ttbar.csv")
@@ -121,8 +126,10 @@ bkg_ppjjjj["label"] = np.full(len(bkg_ppjjjj),0)
 """
 Collect Data Together
 """
+# Data = pd.concat([sig_ppHhh, bkg_ttbar], ignore_index=True, axis=0,join='inner')
+# Data = pd.concat([Data, bkg_ppbbbb], ignore_index=True, axis=0,join='inner')
 Data = pd.concat([sig_ppHhh, bkg_ttbar], ignore_index=True, axis=0,join='inner')
-Data = pd.concat([Data, bkg_ppbbbb], ignore_index=True, axis=0,join='inner')
+Data = pd.concat([Data, bkg_ppjjjj[:len(sig_ppHhh)]], ignore_index=True, axis=0,join='inner')
 
 # %%
 """
@@ -152,7 +159,7 @@ def BDT_Model():
     
     rand = np.random.randint(1000000)
     clf_GBDT = GradientBoostingClassifier(
-                n_estimators=1000,
+                n_estimators=2000,
                 learning_rate=0.005,
                 max_depth=5, 
                 min_samples_split = 0.25,
@@ -199,13 +206,13 @@ logging.info("Rejection Rate: {}".format(FalsePositiveFull[last]))
 """
 Save Model
 """
-dump(clf_GBDT, "./clf_GBDT_1000_Xhh.h5")
+dump(clf_GBDT, "./clf_GBDT_2000_Xhh_ppjjjj.h5")
 
 #%%
 """
 Load Model
 """
-clf_GBDT = load("./clf_GBDT_1000_Xhh.h5")
+clf_GBDT = load("/home/alan/ML_Analysis/THDM/Model/clf_GBDT_2000_Xhh_ppjjjj.h5")
 #%%
 """
 Make Prediction
@@ -223,7 +230,7 @@ for pro in process:
     logging.info("Data total length: {}".format(len(process[pro])))
 
     prediction = clf_GBDT.predict_proba(process[pro][features])
-    np.save("./prediction/"+str(pro)+"_BDT_prediction_trail1000", prediction)
+    np.save("/home/alan/ML_Analysis/THDM/Model/prediction/"+str(pro)+"_BDT_prediction_trail2000_ppjjjj", prediction)
 
     logging.info("Shape of prediction {}".format(prediction.shape))
     logging.info("Prediction total length: {}".format(len(prediction)))
