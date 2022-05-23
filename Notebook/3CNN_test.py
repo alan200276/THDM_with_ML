@@ -177,6 +177,10 @@ HOMEPATH = "/AICourse2022/alan_THDM/MC_Data/"
 ImagePath =  HOMEPATH + "Image_Directory_Test/"
 savepath = HOMEPATH + "Image_Directory_Test/"
 
+# HOMEPATH = "/AICourse2022/alan_THDM/"
+# ImagePath =  HOMEPATH + "Image_Directory/"
+# savepath = HOMEPATH + "Image_Directory/"
+
 #%%
 process = {
             "ppHhh" : 0,
@@ -237,7 +241,7 @@ x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, start=
 """
 Learning Curve
 """
-learning_curve = pd.read_csv("/AICourse2022/alan_THDM/Model_3CNN/training_log_300.csv")
+learning_curve = pd.read_csv("/AICourse2022/alan_THDM/Model_3CNN/training_log_500_ppjjjj.csv")
 fig, ax = plt.subplots(1,1, figsize=(5,5))
 
 plt.plot(learning_curve["loss"], label='training data',c='blue',linewidth = 3)
@@ -255,7 +259,7 @@ plt.show()
 
 #%%
 
-model_3cnn = load_model("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_300.h5")
+model_3cnn = load_model("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500_ppjjjj.h5")
 
 for pro in process:
     logging.info("Process: {}".format(pro))
@@ -288,7 +292,7 @@ for pro in process:
     logging.info("Shape of prediction {}".format(prediction.shape))
     logging.info("Prediction total length: {}".format(len(prediction)))
 
-    np.save("./prediction/"+str(pro)+"_3cnn_prediction_test", prediction)
+    np.save("./prediction/"+str(pro)+"_3cnn_prediction_test_ppjjjjmodel", prediction)
     
     logging.info("{}".format("Done!"))
     logging.info("\n")
