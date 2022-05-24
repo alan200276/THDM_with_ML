@@ -28,7 +28,7 @@ try:
     tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
     tf.config.experimental.set_virtual_device_configuration(
     gpus[0],
-    [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=12000)])
+    [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=24000)])
     logical_gpus = tf.config.experimental.list_logical_devices('GPU')
     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
 except RuntimeError as e:
@@ -95,11 +95,11 @@ time.sleep(5)
 Define Generator
 """
 
-def data_generator(imagepath: str, data_dict: pd.DataFrame, nb_samples: int, batch_size: int):
+def data_generator(imagepath: str, data_dict: pd.DataFrame, nb_samples: int, batch_size: int, Norm_dict: pd.DataFrame):
     while True:
         for start in range(0, nb_samples, batch_size):
-            x_leanding_jet_batch = []
-            x_subleanding_jet_batch = []
+            x_leading_jet_batch = []
+            x_subleading_jet_batch = []
             x_rotated_event_batch = []
             y_batch = []
 
@@ -108,16 +108,28 @@ def data_generator(imagepath: str, data_dict: pd.DataFrame, nb_samples: int, bat
                 
                 x_train_path = imagepath + data_dict["X"].iloc[img_index]
 
-                x_train_leanding_jet = np.load(x_train_path)["leading_jet_image"]
-                x_train_leanding_jet = np.nan_to_num(x_train_leanding_jet)
-                x_leanding_jet_batch.append(x_train_leanding_jet)
+                x_train_leading_jet = np.load(x_train_path)["leading_jet_image"]
+                x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
 
-                x_train_subleanding_jet = np.load(x_train_path)["subleading_jet_image"]
-                x_train_subleanding_jet = np.nan_to_num(x_train_subleanding_jet)
-                x_subleanding_jet_batch.append(x_train_subleanding_jet)
+                x_train_leading_jet = np.divide((x_train_leading_jet - Norm_dict["leading_jet"][0]), (np.sqrt(Norm_dict["leading_jet"][1])+1e-5))
+                x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
+
+                x_leading_jet_batch.append(x_train_leading_jet)
+
+                x_train_subleading_jet = np.load(x_train_path)["subleading_jet_image"]
+                x_train_subleading_jet = np.nan_to_num(x_train_subleading_jet)
+
+                x_train_subleading_jet = np.divide((x_train_subleading_jet - Norm_dict["subleading_jet"][0]), (np.sqrt(Norm_dict["subleading_jet"][1])+1e-5))
+                x_train_subleading_jet = np.nan_to_num(x_train_subleading_jet)
+
+                x_subleading_jet_batch.append(x_train_subleading_jet)
 
                 x_train_rotated_event = np.load(x_train_path)["rotated_event_image"]
                 x_train_rotated_event = np.nan_to_num(x_train_rotated_event)
+
+                x_train_rotated_event = np.divide((x_train_rotated_event - Norm_dict["full_event"][0]), (np.sqrt(Norm_dict["full_event"][1])+1e-5))
+                x_train_rotated_event = np.nan_to_num(x_train_rotated_event)
+
                 x_rotated_event_batch.append(x_train_rotated_event)
         
                 
@@ -126,46 +138,65 @@ def data_generator(imagepath: str, data_dict: pd.DataFrame, nb_samples: int, bat
                 if data_dict["Y"].iloc[img_index] != 0:
                      y_batch.append(["1"])
 
-            yield ([np.asarray(x_leanding_jet_batch), np.asarray(x_subleanding_jet_batch), np.asarray(x_rotated_event_batch)], to_categorical(np.asarray(y_batch)))
+            yield ([np.asarray(x_leading_jet_batch), np.asarray(x_subleading_jet_batch), np.asarray(x_rotated_event_batch)], to_categorical(np.asarray(y_batch)))
 
 
 """
 Define Collector
 """
 
-def loading_data(imagepath: str, data_dict: pd.DataFrame, start: int=0, stop: int=20000): 
-    x_leanding_jet = []
-    x_subleanding_jet = []
+def loading_data(imagepath: str, data_dict: pd.DataFrame , Norm_dict: pd.DataFrame, start: int=0, stop: int=20000): 
+    x_leading_jet = []
+    x_subleading_jet = []
     x_rotated_event = []
     y = []
 
+    # time.sleep(0.5)
+    # for img_index in tqdm(range(start,len(data_dict))):
+
+    logging.info("Collect Data from {} to {}.".format(start,stop))
     time.sleep(0.5)
-    for img_index in tqdm(range(start,len(data_dict))):
-        x_train_path = imagepath + data_dict["X"].iloc[img_index]
+    for img_index in tqdm(range(start,stop)):
+        try:
+            x_train_path = imagepath + data_dict["X"].iloc[img_index]
 
-        x_train_leanding_jet = np.load(x_train_path)["leading_jet_image"]
-        x_train_leanding_jet = np.nan_to_num(x_train_leanding_jet)
-        x_leanding_jet.append(x_train_leanding_jet)
+            x_train_leading_jet = np.load(x_train_path)["leading_jet_image"]
+            x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
 
-        x_train_subleanding_jet = np.load(x_train_path)["subleading_jet_image"]
-        x_train_subleanding_jet = np.nan_to_num(x_train_subleanding_jet)
-        x_subleanding_jet.append(x_train_subleanding_jet)
+            x_train_leading_jet = np.divide((x_train_leading_jet - Norm_dict["leading_jet"][0]), (np.sqrt(Norm_dict["leading_jet"][1])+1e-5))
+            x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
 
-        x_train_rotated_event = np.load(x_train_path)["rotated_event_image"]
-        x_train_rotated_event = np.nan_to_num(x_train_rotated_event)
-        x_rotated_event.append(x_train_rotated_event)
+            x_leading_jet.append(x_train_leading_jet)
 
-        # x_jet_tmp = np.divide((x_jet_tmp - norm_dict[0]), (np.sqrt(norm_dict[1])+1e-5))#[0].reshape(1,40,40)
-        if data_dict["Y"].iloc[img_index] == 0:
-            y.append(["0"])
-        if data_dict["Y"].iloc[img_index] != 0:
-            y.append(["1"])
+            x_train_subleading_jet = np.load(x_train_path)["subleading_jet_image"]
+            x_train_subleading_jet = np.nan_to_num(x_train_subleading_jet)
 
+            x_train_subleading_jet = np.divide((x_train_subleading_jet - Norm_dict["subleading_jet"][0]), (np.sqrt(Norm_dict["subleading_jet"][1])+1e-5))
+            x_train_subleading_jet = np.nan_to_num(x_train_subleading_jet)
 
-        if img_index == stop:
+            x_subleading_jet.append(x_train_subleading_jet)
+
+            x_train_rotated_event = np.load(x_train_path)["rotated_event_image"]
+            x_train_rotated_event = np.nan_to_num(x_train_rotated_event)
+
+            x_train_rotated_event = np.divide((x_train_rotated_event - Norm_dict["full_event"][0]), (np.sqrt(Norm_dict["full_event"][1])+1e-5))
+            x_train_rotated_event = np.nan_to_num(x_train_rotated_event)
+
+            x_rotated_event.append(x_train_rotated_event)
+
+            # x_jet_tmp = np.divide((x_jet_tmp - norm_dict[0]), (np.sqrt(norm_dict[1])+1e-5))#[0].reshape(1,40,40)
+            if data_dict["Y"].iloc[img_index] == 0:
+                y.append(["0"])
+            if data_dict["Y"].iloc[img_index] != 0:
+                y.append(["1"])
+
+        except:
             break
 
-    return [np.asarray(x_leanding_jet), np.asarray(x_subleanding_jet), np.asarray(x_rotated_event)], to_categorical(np.asarray(y))
+        # if img_index == stop:
+        #     break
+
+    return [np.asarray(x_leading_jet), np.asarray(x_subleading_jet), np.asarray(x_rotated_event)], to_categorical(np.asarray(y))
 
 
 
@@ -178,21 +209,44 @@ savepath = HOMEPATH + "Image_Directory/"
 process = {
             "ppHhh" : 0,
             "ttbar" : 0,
-            "ppbbbb" : 0,
+            # "ppbbbb" : 0,
             # "ppjjjb" : 0,
-            # "ppjjjj" : 0,
+            "ppjjjj" : 0,
               }  
     
 for i, element in enumerate(process):
     process[element] = pd.read_csv(savepath + str(element) + "_dict.csv")
 
+
+#%%
+Norm_dict ={
+            "leading_jet" : [0,0],
+            "subleading_jet" : [0,0],
+            "full_event" : [0,0],
+            }  
+
+for i, element in enumerate(Norm_dict):
+
+    l = 0
+
+    for j, pro in enumerate(process):
+        l += len(process[pro])
+        average = np.load(savepath + "average" + "_" + str(element) + "_"+str(pro)+".npy")
+        variance = np.load(savepath + "variance" + "_" + str(element) + "_"+str(pro)+".npy")
+        
+        Norm_dict[element][0] += average #*len(process[pro])
+        Norm_dict[element][1] += variance
+
+    Norm_dict[element][0] = Norm_dict[element][0]/(j+1)
+
+
 #%%
 process_train_test = {
                     "ppHhh" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                     "ttbar" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
-                    "ppbbbb" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
+                    # "ppbbbb" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                     # "ppjjjb" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
-                    # "ppjjjj" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
+                    "ppjjjj" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                      }  
 
 for i, element in enumerate(process_train_test):
@@ -204,16 +258,31 @@ for i, element in enumerate(process_train_test):
      = train_test_split( process[element]["Image"], process[element]["Y"], test_size=0.10, random_state=42)
 
 #%%
-training_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["training"]))[:len(process["ppbbbb"])]
+# training_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["training"]))[:len(process["ppbbbb"])]
+# for element in process_train_test:
+#     if element == "ppHhh":
+#         continue
+#     else:
+#         training_pd = pd.concat([training_pd, pd.DataFrame(process_train_test[element]["training"])], ignore_index=True)
+
+# test_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["test"]))[:int(len(process["ppbbbb"])/10)]
+# for element in process_train_test:
+#     if element == "ppHhh":
+#         continue
+#     else:
+#         test_pd = pd.concat([test_pd, pd.DataFrame(process_train_test[element]["test"])], ignore_index=True)
+
+
+training_pd = shuffle(pd.DataFrame(process_train_test["ppjjjj"]["training"]))[:len(process["ppHhh"])]
 for element in process_train_test:
-    if element == "ppHhh":
+    if element == "ppjjjj":
         continue
     else:
         training_pd = pd.concat([training_pd, pd.DataFrame(process_train_test[element]["training"])], ignore_index=True)
 
-test_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["test"]))[:int(len(process["ppbbbb"])/10)]
+test_pd = shuffle(pd.DataFrame(process_train_test["ppjjjj"]["test"]))[:int(len(process["ppHhh"])/10)]
 for element in process_train_test:
-    if element == "ppHhh":
+    if element == "ppjjjj":
         continue
     else:
         test_pd = pd.concat([test_pd, pd.DataFrame(process_train_test[element]["test"])], ignore_index=True)
@@ -226,23 +295,6 @@ logging.info("\n")
 logging.info("There are {} sig and {} bkg in training dataset.".format(len(training_pd[training_pd["Y"]==0]),len(training_pd[training_pd["Y"]!=0])))
 logging.info("There are {} sig and {} bkg in test dataset.".format(len(test_pd[test_pd["Y"]==0]),len(test_pd[test_pd["Y"]!=0])))
 logging.info("\n")
-#%%
-# norm_dict = {
-#             "ppHhh" : {"leading_jet" : [0,0], "subleading_jet" : [0,0], "rotated_event" : [0,0]},
-#             "ttbar" : {"leading_jet" : [0,0], "subleading_jet" : [0,0], "rotated_event" : [0,0]},
-#             "ppbbbb" : {"leading_jet" : [0,0], "subleading_jet" : [0,0], "rotated_event" : [0,0]},
-#             # "ppjjjb" : {"leading_jet" : [0,0], "subleading_jet" : [0,0], "rotated_event" : [0,0]},
-#             # "ppjjjj" : {"leading_jet" : [0,0], "subleading_jet" : [0,0], "rotated_event" : [0,0]},
-#               }  
-
-# for element in norm_dict:
-#     logging.info("Process is {}".format(element))
-
-#     for subelement in norm_dict[element]:
-#         logging.info("{} for {}".format(subelement, element ))
-#         norm_dict[element][subelement][0] = np.load(savepath + "average" + "_"+str(subelement)+"_" + str(element) + ".npy")
-#         norm_dict[element][subelement][1] = np.load(savepath + "variance" + "_"+str(subelement)+"_" + str(element) + ".npy")
-
 
 #%%
 """
@@ -325,12 +377,21 @@ Call Model
 model_3cnn = Model_3CNN()
 model_3cnn.summary()
 
+
+
 #%%
-# """
-# Collecting Data
-# """
-# x_train, y_train = loading_data(imagepath = ImagePath, data_dict = training_pd, start=0, stop=558519)
-# x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, start=0, stop=58977)
+"""
+Collecting Data
+"""
+
+# x_train, y_train = loading_data(imagepath = ImagePath, data_dict = training_pd, Norm_dict = Norm_dict, start=0, stop=558519)
+# x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, Norm_dict = Norm_dict, start=0, stop=58977)
+# x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, Norm_dict = Norm_dict, start=0, stop=58977)
+
+# for i, element in enumerate(range(0,len(training_pd), 200000)):
+#     logging.info("{}/{}".format(i, len(training_pd)//200000))
+
+#     x_train, y_train = loading_data(imagepath = ImagePath, data_dict = training_pd, Norm_dict = Norm_dict, start= element, stop=int(element+200000))
 
 
 #%%
@@ -349,15 +410,14 @@ nb_test_samples = 58977 #58977
 
 batch_size = 512
 
-train_generator = data_generator(imagepath = ImagePath,  data_dict = training_pd, nb_samples = nb_train_samples, batch_size = 200)
-val_generator = data_generator(imagepath = ImagePath,  data_dict = test_pd, nb_samples = nb_test_samples, batch_size = 200)
-
+train_generator = data_generator(imagepath = ImagePath,  data_dict = training_pd, nb_samples = nb_train_samples, batch_size = batch_size, Norm_dict = Norm_dict)
+val_generator = data_generator(imagepath = ImagePath,  data_dict = test_pd, nb_samples = nb_test_samples, batch_size = batch_size, Norm_dict = Norm_dict)
 
 
 check_list=[]
-csv_logger = CSVLogger('/AICourse2022/alan_THDM/Model_3CNN/training_log_500.csv')
+csv_logger = CSVLogger('/AICourse2022/alan_THDM/Model_3CNN/training_log_500_norm_ppjjjj.csv')
 checkpoint = ModelCheckpoint(
-                    filepath='/AICourse2022/alan_THDM/Model_3CNN/checkmodel_500.h5',
+                    filepath='/AICourse2022/alan_THDM/Model_3CNN/checkmodel_500_norm_ppjjjj.h5',
                     save_best_only=True,
                     verbose=1)
 check_list.append(checkpoint)
@@ -380,12 +440,12 @@ history_model_3cnn = model_3cnn.fit(
 #                                     y = y_train ,
 #                                     validation_data= (x_test, y_test),
 #                                     batch_size=512,
-#                                     epochs= 100,
+#                                     epochs= 500,
 #                                     callbacks=check_list,
 #                                     verbose=1
 #                                     )
 
-model_3cnn.save("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500.h5")
+model_3cnn.save("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500_norm_ppjjjj.h5")
 
 # %%
 ############################################################################################################################################################
