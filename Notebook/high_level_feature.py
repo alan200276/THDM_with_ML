@@ -25,6 +25,12 @@ importlib.reload(logging)
 logging.basicConfig(level = logging.INFO)
 
 
+"""
+Self-define Function
+"""
+from function import High_Level_Features
+from function import Basic_Preselection
+
 logging.info("Numpy Version: {}".format(np.__version__))
 logging.info("Pnadas Version: {}".format(pd.__version__))
 #%%
@@ -32,8 +38,8 @@ class Samples:
     def __init__(self,\
                  ppHhh,\
                  ttbar,\
-                 ppbbbb,\
-                 ppjjjb,\
+                #  ppbbbb,\
+                #  ppjjjb,\
                  ppjjjj,\
                  four_b_tag=False,\
                  three_b_tag=False,\
@@ -43,29 +49,29 @@ class Samples:
         if four_b_tag == True:
             self.ppHhh = ppHhh[ppHhh["four_b_tag"]==1]
             self.ttbar = ttbar[ttbar["four_b_tag"]==1]
-            self.ppbbbb = ppbbbb[ppbbbb["four_b_tag"]==1]
-            self.ppjjjb = ppjjjb[ppjjjb["four_b_tag"]==1]
+            # self.ppbbbb = ppbbbb[ppbbbb["four_b_tag"]==1]
+            # self.ppjjjb = ppjjjb[ppjjjb["four_b_tag"]==1]
             self.ppjjjj = ppjjjj[ppjjjj["four_b_tag"]==1]
             
         elif three_b_tag == True:
             self.ppHhh = ppHhh[ppHhh["three_b_tag"]==1]
             self.ttbar = ttbar[ttbar["three_b_tag"]==1]
-            self.ppbbbb = ppbbbb[ppbbbb["three_b_tag"]==1]
-            self.ppjjjb = ppjjjb[ppjjjb["three_b_tag"]==1]
+            # self.ppbbbb = ppbbbb[ppbbbb["three_b_tag"]==1]
+            # self.ppjjjb = ppjjjb[ppjjjb["three_b_tag"]==1]
             self.ppjjjj = ppjjjj[ppjjjj["three_b_tag"]==1]
         
         elif two_b_tag == True:
             self.ppHhh = ppHhh[ppHhh["two_b_tag"]==1]
             self.ttbar = ttbar[ttbar["two_b_tag"]==1]
-            self.ppbbbb = ppbbbb[ppbbbb["two_b_tag"]==1]
-            self.ppjjjb = ppjjjb[ppjjjb["two_b_tag"]==1]
+            # self.ppbbbb = ppbbbb[ppbbbb["two_b_tag"]==1]
+            # self.ppjjjb = ppjjjb[ppjjjb["two_b_tag"]==1]
             self.ppjjjj = ppjjjj[ppjjjj["two_b_tag"]==1]
             
         else:
             self.ppHhh = ppHhh
             self.ttbar = ttbar
-            self.ppbbbb = ppbbbb
-            self.ppjjjb = ppjjjb
+            # self.ppbbbb = ppbbbb
+            # self.ppjjjb = ppjjjb
             self.ppjjjj = ppjjjj
         
     def Signal_only(self,feature):
@@ -73,33 +79,19 @@ class Samples:
         return H
     
     def Background_only(self,feature):
-        QCD = [self.ttbar[feature],self.ppbbbb[feature],self.ppjjjb[feature] ,self.ppjjjj[feature]]
+        QCD = [self.ttbar[feature],
+                # self.ppbbbb[feature],
+                # self.ppjjjb[feature] ,
+                self.ppjjjj[feature]]
         return QCD
     
     def Signal_Background(self,feature):
-        Both = [self.ppHhh[feature],self.ttbar[feature],self.ppbbbb[feature],self.ppjjjb[feature],self.ppjjjj[feature]]
+        Both = [self.ppHhh[feature],
+                self.ttbar[feature],
+                # self.ppbbbb[feature],
+                # self.ppjjjb[feature],
+                self.ppjjjj[feature]]
         return Both
-#%%
-def High_Level_Features(csv_file=[]):
-    
-    if len(csv_file) < 1:
-        raise ValueError("Please check high-level features files!!")
-        
-    high_level_feature = pd.read_csv(csv_file[0])
-
-    for i, file in enumerate(csv_file):
-        if i == 0:
-            continue
-        else:
-            dataframe = pd.read_csv(file)
-            
-            high_level_feature = pd.concat([high_level_feature, dataframe], ignore_index=True, axis=0,join='inner')
-            
-    
-    logging.info( "\033[3;43m Total File Length: {} \033[0;m".format(len(high_level_feature)))
-    logging.info("\r")
-    
-    return high_level_feature
 
 #%%
 path = "/home/u5/THDM/Data_High_Level_Features/"
@@ -109,21 +101,27 @@ path = "/home/u5/THDM/Data_High_Level_Features/"
 Signal
 """
 process_path_ppHhh = sorted(glob.glob(path+"ppHhh"+"*.csv"))
-# process_path_ppHhh = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Level_Features/ppHhh"+"*.csv"))
-
 
 """
 Backgound
 """
 process_path_ttbar = sorted(glob.glob(path+"ttbar"+"*.csv"))
-process_path_ppbbbb = sorted(glob.glob(path+"ppbbbb"+"*.csv"))
-process_path_jjjb = sorted(glob.glob(path+"ppjjjb"+"*.csv"))
+# process_path_ppbbbb = sorted(glob.glob(path+"ppbbbb"+"*.csv"))
+# process_path_jjjb = sorted(glob.glob(path+"ppjjjb"+"*.csv"))
 process_path_jjjj = sorted(glob.glob(path+"ppjjjj"+"*.csv"))
 # process_path_jjjj_2 = []
 process_path_jjjj_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Level_Features/ppjjjj"+"*.csv"))
 process_path_jjjj.extend(process_path_jjjj_2)
 
 #%%
+path = "/home/u5/THDM/"
+
+sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
+bkg_ttbar = pd.read_csv(path+"ttbar.csv")
+# bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
+# bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
+bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
+
 # sig_ppHhh = High_Level_Features(process_path_ppHhh)
 
 # bkg_ttbar = High_Level_Features(process_path_ttbar)
@@ -131,28 +129,20 @@ process_path_jjjj.extend(process_path_jjjj_2)
 # bkg_ppjjjb = High_Level_Features(process_path_jjjb)
 # bkg_ppjjjj = High_Level_Features(process_path_jjjj)
 
-
-sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
-bkg_ttbar = pd.read_csv(path+"ttbar.csv")
-bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
-bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
-bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
-
 #%%
 process_length = {
-            "ppHhh" : (len(process_path_ppHhh)-1)*100000,
-            # "ppHhh" : len(process_path_ppHhh)*10000,
-            "ttbar" : (len(process_path_ppHhh)-1)*100000,
-            "ppbbbb" : (len(process_path_ppHhh)-1)*100000,
-            "ppjjjb" : (len(process_path_ppHhh)-1)*100000,
-            "ppjjjj" : (len(process_path_jjjj)-1-len(process_path_jjjj_2))*100000+len(process_path_jjjj_2)*10000,
+            "ppHhh" : 2000000,
+            "ttbar" : 2000000,
+            # "ppbbbb" : 2000000,
+            # "ppjjjb" : 2000000,
+            "ppjjjj" : 12790000,
         }  
 
 process = {
             "ppHhh" : sig_ppHhh,
             "ttbar" : bkg_ttbar,
-            "ppbbbb" : bkg_ppbbbb,
-            "ppjjjb" : bkg_ppjjjb,
+            # "ppbbbb" : bkg_ppbbbb,
+            # "ppjjjb" : bkg_ppjjjb,
             "ppjjjj" : bkg_ppjjjj,
         }  
 # %%
@@ -186,8 +176,8 @@ preselection = {
 process_selected = {
                     "ppHhh" : 0,
                     "ttbar" : 0,
-                    "ppbbbb" : 0,
-                    "ppjjjb" : 0,
+                    # "ppbbbb" : 0,
+                    # "ppjjjb" : 0,
                     "ppjjjj" : 0,
                     }  
 
@@ -200,13 +190,13 @@ process_selected = {
 #                 }  
 
 expected_event = {
-                    # "ppHhh" : (0.81186/1000)*0.8715*(0.3560**2)*139*1000*(0.77**4),
-                    "ppHhh" : (1./1000)*139*1000*0.5824*0.5824*(0.77**4),
-                    "ttbar" : 260.3554*139*1000*(0.77**4)*0.192,
+                    "ppHhh" : (0.81186/1000)*0.8715*(0.3560**2)*3000*1000*(0.77**4),
+                    # "ppHhh" : (1./1000)*139*1000*0.5824*0.5824*(0.77**4),
+                    "ttbar" : 260.3554*3000*1000*(0.77**4)*0.192,
                     # "ttbar" : 225.71*139*1000*(0.77**4),*0.192,
-                    "ppbbbb" : 0.4070 *139*1000,
-                    "ppjjjb" : 450.04*139*1000,
-                    "ppjjjj" : 11087.8358304*139*1000*(0.77**4)*0.015,
+                    # "ppbbbb" : 0.4070 *139*1000,
+                    # "ppjjjb" : 450.04*139*1000,
+                    "ppjjjj" : 11087.8358304*3000*1000*(0.77**4)*0.015,
                     # "ppjjjj" : 8299*139*1000*(0.77**4)*0.015,
                 }  
 
@@ -228,12 +218,12 @@ for j , element in enumerate(process):
     tmp = tmp[(tmp["ET"] > 420) & (tmp["MJ1_0"] > 35)]
     preselection["Trigger"][j] = len(tmp)/process_length[element]#/len(process[element])
     
-    """
-    PT(J1) > 450 GeV 
-    """
+    # """
+    # PT(J1) > 450 GeV 
+    # """
     
-    tmp = tmp[(tmp["PTJ1"] > 450)]
-    preselection["PT_J1"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(tmp["PTJ1"] > 450)]
+    # preselection["PT_J1"][j] = len(tmp)/process_length[element]#/len(process[element])
 
     # """
     # PT(J1) > 325 GeV  (for M(H)=800)
@@ -243,33 +233,33 @@ for j , element in enumerate(process):
     # preselection["PT_J1"][j] = len(tmp)/process_length[element]#/len(process[element])
     
     
-    """
-    PT(J2) > 250 GeV 
-    """
+    # """
+    # PT(J2) > 250 GeV 
+    # """
     
-    tmp = tmp[(tmp["PTJ2"] > 250)]
-    preselection["PT_J2"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(tmp["PTJ2"] > 250)]
+    # preselection["PT_J2"][j] = len(tmp)/process_length[element]#/len(process[element])
     
-    """
-    |Eta(J1)| < 2 & |Eta(J2)| < 2 
-    """
+    # """
+    # |Eta(J1)| < 2 & |Eta(J2)| < 2 
+    # """
     
-    tmp = tmp[(abs(tmp["eta1"]) < 2) & (abs(tmp["eta2"]) < 2)]
-    preselection["Eta"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(abs(tmp["eta1"]) < 2) & (abs(tmp["eta2"]) < 2)]
+    # preselection["Eta"][j] = len(tmp)/process_length[element]#/len(process[element])
     
-    """
-    M(J1) > 50 GeV &  M(J2) > 50 GeV
-    """
+    # """
+    # M(J1) > 50 GeV &  M(J2) > 50 GeV
+    # """
     
-    tmp = tmp[(tmp["MJ1"] > 50) & (tmp["MJ2"] > 50)]
-    preselection["M_J"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(tmp["MJ1"] > 50) & (tmp["MJ2"] > 50)]
+    # preselection["M_J"][j] = len(tmp)/process_length[element]#/len(process[element])
     
-    """
-    |Delta[Eta(J1),Eta(J2)]| < 1.3
-    """
+    # """
+    # |Delta[Eta(J1),Eta(J2)]| < 1.3
+    # """
     
-    tmp = tmp[(abs(tmp["delta_eta"]) < 1.3)]
-    preselection["Delta_Eta"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(abs(tmp["delta_eta"]) < 1.3)]
+    # preselection["Delta_Eta"][j] = len(tmp)/process_length[element]#/len(process[element])
     
     
     # """
@@ -280,13 +270,13 @@ for j , element in enumerate(process):
     # preselection["XHH"][j] = len(tmp)/len(process[element])
     
     
-    """
-    X(H,H) < 1.6
-    """
+    # """
+    # X(H,H) < 1.6
+    # """
     
-    # tmp = tmp[(tmp["XHH_0"] < 1.6)]
-    tmp = tmp[(tmp["Xhh"] < 1.6)]   
-    preselection["XHH"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # # tmp = tmp[(tmp["XHH_0"] < 1.6)]
+    # tmp = tmp[(tmp["Xhh"] < 1.6)]   
+    # preselection["XHH"][j] = len(tmp)/process_length[element]#/len(process[element])
 
 
 
@@ -299,13 +289,13 @@ for j , element in enumerate(process):
     # preselection["MJJ"][j] = len(tmp)/process_length[element]#/len(process[element])
 
 
-    """
-    1200 GeV > M(J1,J2) > 900 GeV
-    """
+    # """
+    # 1200 GeV > M(J1,J2) > 900 GeV
+    # """
     
-    # tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1200)]
-    tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1100)]
-    preselection["MJJ"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # # tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1200)]
+    # tmp = tmp[(tmp["MJJ"] > 900) & (tmp["MJJ"] < 1100)]
+    # preselection["MJJ"][j] = len(tmp)/process_length[element]#/len(process[element])
 
 
     # """
@@ -315,12 +305,12 @@ for j , element in enumerate(process):
     # tmp = tmp[(tmp["MJJ_0"] > 750) & (tmp["MJJ_0"] < 850)]
     # preselection["MJJ"][j] = len(tmp)/process_length[element]#/len(process[element])
 
-    """
-    4b-tag 
-    """
+    # """
+    # 4b-tag 
+    # """
     
-    tmp = tmp[(tmp["four_b_tag"] == 1)]
-    preselection["four_b_tag"][j] = len(tmp)/process_length[element]#/len(process[element])
+    # tmp = tmp[(tmp["four_b_tag"] == 1)]
+    # preselection["four_b_tag"][j] = len(tmp)/process_length[element]#/len(process[element])
     
     # """
     # 3b-tag 
@@ -353,8 +343,8 @@ logging.info("\r")
 
 preselection_process = {"ppHhh":[],
                         "ttbar":[],
-                        "ppbbbb":[],
-                        "ppjjjb":[],
+                        # "ppbbbb":[],
+                        # "ppjjjb":[],
                         "ppjjjj":[],
                        }
 
@@ -375,8 +365,8 @@ preselection_process
 # %%
 TotalSamples = Samples(process_selected["ppHhh"],
                        process_selected["ttbar"],
-                       process_selected["ppbbbb"],
-                       process_selected["ppjjjb"],
+                    #    process_selected["ppbbbb"],
+                    #    process_selected["ppjjjb"],
                        process_selected["ppjjjj"],
                        four_b_tag = 0,
                        three_b_tag = 0,
@@ -390,14 +380,26 @@ def HIST(process, length, title, colors, linestyle,xpo=1,ypo=1):
     plt.legend(loc="best",ncol=1,fontsize=20, edgecolor = "w",fancybox=False, framealpha=0)
 
 
-title = ["ppHhh","ttbar","ppbbbb","ppjjjb","ppjjjj",
+# title = ["ppHhh",
+#           "ttbar",
+#         #   "ppbbbb",
+#         #   "ppjjjb",
+#           "ppjjjj",
+#         ]
+
+title = ["$pp\\to H\\to hh$",
+          "$t\\bar{t}$",
+        #   "ppbbbb",
+        #   "ppjjjb",
+          "$QCD$",
         ]
-colors = ["green","red","blue","purple","Orange"
+
+colors = ["green","red","blue",#"purple","Orange"
 #           "cyan","black","Orange","lightblue"
          ]
 
 
-linestyle = ["-","-.",":","--","o",
+linestyle = ["-","-.",":",#"--","o",
 #              "--","o","v",":"
             ]
 # %%
@@ -421,7 +423,7 @@ plt.show()
 # %%
 jet_kinematic = [
                   "MJJ","MJ1","PTJ1","MJ2","PTJ2",
-                  "delta_eta", "Xhh_0",#"XHH"
+                  "delta_eta", "Xhh",#"XHH"
                 ]
 jet_kinematic_name = [
                        "$M_{JJ}$", "$M_{J_1}$", "$p_{T_{J_1}}$", "$M_{J_2}$", "$p_{T_{J_2}}$",
@@ -437,7 +439,7 @@ for index, kinematic in enumerate(jet_kinematic):
     for i, element in enumerate(Kinematic):
 
 #         xmin, xmax = 0, np.max(process)
-        if kinematic == "Xhh_0":
+        if kinematic == "Xhh":
             xmin, xmax = 0, 10
         else:
             xmin = np.sort(Kinematic[0])[int(len(Kinematic[0])*1/2000)] 
