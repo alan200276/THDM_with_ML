@@ -28,7 +28,7 @@ try:
     tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
     tf.config.experimental.set_virtual_device_configuration(
     gpus[0],
-    [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=10000)])
+    [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=24000)])
     logical_gpus = tf.config.experimental.list_logical_devices('GPU')
     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
 except RuntimeError as e:
@@ -106,7 +106,7 @@ def data_generator(imagepath: str, data_dict: pd.DataFrame, nb_samples: int, bat
             end = min(start + batch_size, nb_samples)
             for img_index in range(start, end):
                 
-                x_train_path = imagepath + data_dict["Image"].iloc[img_index]
+                x_train_path = imagepath + data_dict["X"].iloc[img_index]
 
                 x_train_leading_jet = np.load(x_train_path)["leading_jet_image"]
                 x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
@@ -158,7 +158,7 @@ def loading_data(imagepath: str, data_dict: pd.DataFrame , Norm_dict: pd.DataFra
     time.sleep(0.5)
     for img_index in tqdm(range(start,stop)):
         try:
-            x_train_path = imagepath + data_dict["Image"].iloc[img_index]
+            x_train_path = imagepath + data_dict["X"].iloc[img_index]
 
             x_train_leading_jet = np.load(x_train_path)["leading_jet_image"]
             x_train_leading_jet = np.nan_to_num(x_train_leading_jet)
@@ -201,13 +201,9 @@ def loading_data(imagepath: str, data_dict: pd.DataFrame , Norm_dict: pd.DataFra
 
 
 #%%
-HOMEPATH = "/AICourse2022/alan_THDM/MC_Data/"
-ImagePath =  HOMEPATH + "Image_Directory_Test/"
-savepath = HOMEPATH + "Image_Directory_Test/"
-
-HOMEPATH_2 = "/AICourse2022/alan_THDM/"
-ImagePath_2 =  HOMEPATH_2 + "Image_Directory/"
-savepath_2 = HOMEPATH_2 + "Image_Directory/"
+HOMEPATH = "/AICourse2022/alan_THDM/"
+ImagePath =  HOMEPATH + "Image_Directory/"
+savepath = HOMEPATH + "Image_Directory/"
 
 #%%
 process = {
@@ -219,10 +215,8 @@ process = {
               }  
     
 for i, element in enumerate(process):
-    if element == "ppjjjj":
-        process[element] = pd.read_csv(savepath_2 + str(element) + "_dict.csv")
-    else:
-        process[element] = pd.read_csv(savepath + str(element) + "_dict.csv")
+    process[element] = pd.read_csv(savepath + str(element) + "_dict.csv")
+
 
 #%%
 Norm_dict ={
@@ -231,20 +225,20 @@ Norm_dict ={
             "full_event" : [0,0],
             }  
 
-
 for i, element in enumerate(Norm_dict):
 
     l = 0
 
     for j, pro in enumerate(process):
         l += len(process[pro])
-        average = np.load(savepath_2 + "average" + "_" + str(element) + "_"+str(pro)+".npy")
-        variance = np.load(savepath_2 + "variance" + "_" + str(element) + "_"+str(pro)+".npy")
+        average = np.load(savepath + "average" + "_" + str(element) + "_"+str(pro)+".npy")
+        variance = np.load(savepath + "variance" + "_" + str(element) + "_"+str(pro)+".npy")
         
         Norm_dict[element][0] += average #*len(process[pro])
         Norm_dict[element][1] += variance
 
     Norm_dict[element][0] = Norm_dict[element][0]/(j+1)
+
 
 #%%
 process_train_test = {
@@ -252,7 +246,7 @@ process_train_test = {
                     "ttbar" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                     # "ppbbbb" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                     # "ppjjjb" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
-                    # "ppjjjj" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
+                    "ppjjjj" : {"training": {"X": 0, "Y": 0}, "test": {"X": 0, "Y": 0}},
                      }  
 
 for i, element in enumerate(process_train_test):
@@ -264,6 +258,21 @@ for i, element in enumerate(process_train_test):
      = train_test_split( process[element]["Image"], process[element]["Y"], test_size=0.10, random_state=42)
 
 #%%
+# training_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["training"]))[:len(process["ppbbbb"])]
+# for element in process_train_test:
+#     if element == "ppHhh":
+#         continue
+#     else:
+#         training_pd = pd.concat([training_pd, pd.DataFrame(process_train_test[element]["training"])], ignore_index=True)
+
+# test_pd = shuffle(pd.DataFrame(process_train_test["ppHhh"]["test"]))[:int(len(process["ppbbbb"])/10)]
+# for element in process_train_test:
+#     if element == "ppHhh":
+#         continue
+#     else:
+#         test_pd = pd.concat([test_pd, pd.DataFrame(process_train_test[element]["test"])], ignore_index=True)
+
+
 training_pd = shuffle(pd.DataFrame(process_train_test["ppjjjj"]["training"]))[:len(process["ppHhh"])]
 for element in process_train_test:
     if element == "ppjjjj":
@@ -287,129 +296,161 @@ logging.info("There are {} sig and {} bkg in training dataset.".format(len(train
 logging.info("There are {} sig and {} bkg in test dataset.".format(len(test_pd[test_pd["Y"]==0]),len(test_pd[test_pd["Y"]!=0])))
 logging.info("\n")
 
-x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, start=0, stop=len(test_pd))
+#%%
+"""
+Model
+"""
+def return_pad_me(padding):
+    def pad_me(x):
+        #FRANK# x[:,:,:y,:] slice x off from y at the given axis.
+        return(tf.concat((x,x[:,:,:padding,:]),2))
+#         return(tf.concat((2,x,x[:,:,:padding,:])))
+    return(pad_me)
+
+
+
+def Model_3CNN():
+
+    input_shape = (3, 40,40)
+
+    model_leadingjet = Sequential(name = 'Leadingjet')
+    model_leadingjet.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
+                    activation='relu',
+                    data_format='channels_first',input_shape=input_shape, name = 'leadingjet'))
+    model_leadingjet.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2),data_format='channels_first', name = 'leadingjet_MaxPooling_1'))
+    model_leadingjet.add(Conv2D(64, (5, 5), activation='relu',data_format='channels_first', name = 'leadingjet_2D_1'))
+    model_leadingjet.add(MaxPooling2D(pool_size=(2, 2),data_format='channels_first', name = 'leadingjet_MaxPooling_2'))
+    model_leadingjet.add(Flatten(name = 'leadingjet_flatten'))
+    model_leadingjet.add(Dense(300, activation='relu', name = 'leadingjet_dense_1'))
+    model_leadingjet.add(Dropout(0.1))
+
+    model_subleadingjet = Sequential(name = 'SubLeadingjet')
+    model_subleadingjet.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
+                    activation='relu',
+                    data_format='channels_first',input_shape=input_shape, name = 'subleadingjet'))
+    model_subleadingjet.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2),data_format='channels_first', name = 'subleadingjet_MaxPooling_1'))
+    model_subleadingjet.add(Conv2D(64, (5, 5), activation='relu',data_format='channels_first', name = 'subleadingjet_2D_1'))
+    model_subleadingjet.add(MaxPooling2D(pool_size=(2, 2),data_format='channels_first', name = 'subleadingjet_MaxPooling_2'))
+    model_subleadingjet.add(Flatten(name = 'subleadingjet_flatten'))
+    model_subleadingjet.add(Dense(300, activation='relu', name = 'subleadingjet_dense_1'))
+    model_subleadingjet.add(Dropout(0.1))
+
+    model_event = Sequential(name = 'Event')
+    model_event.add(Lambda(return_pad_me(4),
+                    input_shape=input_shape, name = 'event'))
+    model_event.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
+                    activation='relu',
+                    data_format='channels_first', name = 'event_2D_1'))
+    model_event.add(Lambda(return_pad_me(1),
+                    input_shape=input_shape, name = 'event_padding_1'))
+    model_event.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2),data_format='channels_first', name = 'event_MaxPooling_1'))
+    model_event.add(Lambda(return_pad_me(4),input_shape=input_shape, name = 'event_padding_2'))
+    model_event.add(Conv2D(64, (5, 5), activation='relu',data_format="channels_first", name = 'event_2D_2'))
+    model_event.add(Lambda(return_pad_me(1),input_shape=input_shape, name = 'event_padding_3'))
+    model_event.add(MaxPooling2D(pool_size=(2, 2),data_format="channels_first", name = 'event_MaxPooling_2'))
+    model_event.add(Flatten(name = 'event_flatten'))
+    model_event.add(Dense(300, activation='relu', name = 'event_dense_1'))
+    model_event.add(Dropout(0.1))
+
+
+
+    mergedOut = Concatenate()([model_leadingjet.output, model_subleadingjet.output,model_event.output])
+    # mergedOut = Dense(1, activation='sigmoid')(mergedOut)
+    mergedOut = Dense(2, activation='softmax')(mergedOut)
+
+    newModel = Model([model_leadingjet.input, model_subleadingjet.input,model_event.input], mergedOut,name = '3CNN')
+
+
+    model_opt = keras.optimizers.Adadelta()
+    # model_opt = keras.optimizers.Adam()
+
+    newModel.compile(loss="categorical_crossentropy",#keras.losses.binary_crossentropy
+                optimizer=model_opt,
+                metrics=['accuracy'])
+    
+
+    return newModel
+#%%
+"""
+Call Model
+"""
+model_3cnn = Model_3CNN()
+model_3cnn.summary()
+
 
 
 #%%
 """
-Learning Curve
+Collecting Data
 """
-learning_curve = pd.read_csv("/AICourse2022/alan_THDM/Model_3CNN/training_log_500_ppjjjj.csv")
-fig, ax = plt.subplots(1,1, figsize=(5,5))
 
-plt.plot(learning_curve["loss"], label='training data',c='blue',linewidth = 3)
-plt.plot(learning_curve["val_loss"], label='validation data',c='red',linewidth = 3)
+# x_train, y_train = loading_data(imagepath = ImagePath, data_dict = training_pd, Norm_dict = Norm_dict, start=0, stop=558519)
+# x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, Norm_dict = Norm_dict, start=0, stop=58977)
+x_test, y_test = loading_data(imagepath = ImagePath, data_dict = test_pd, Norm_dict = Norm_dict, start=0, stop=58977)
 
-plt.title("3CNN", fontsize=15)
+for i, element in enumerate(range(0,len(training_pd), 100000)):
+    logging.info("{}/{}".format(i, len(training_pd)//100000))
 
-ax.set_ylabel('loss', fontsize=15,horizontalalignment='right',y=1)
-ax.set_xlabel('epoch', fontsize=15,horizontalalignment='right',x=1)
-plt.legend(loc='best', prop={'size':15}, edgecolor = "w",fancybox=False, framealpha=0)
+    x_train, y_train = loading_data(imagepath = ImagePath, data_dict = training_pd, Norm_dict = Norm_dict, start= element, stop=int(element+100000))
 
 
-plt.show()
+    #%%
+    # time counter
+    print(time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
+    ticks_1 = time.time()
+    ############################################################################################################################################################
+
+    """
+    Model Training
+    """
+
+    nb_train_samples = 558519 #558519
+    nb_val_samples = 58977
+    nb_test_samples = 58977 #58977
+
+    batch_size = 512
+
+    # train_generator = data_generator(imagepath = ImagePath,  data_dict = training_pd, nb_samples = nb_train_samples, batch_size = batch_size, Norm_dict = Norm_dict)
+    # val_generator = data_generator(imagepath = ImagePath,  data_dict = test_pd, nb_samples = nb_test_samples, batch_size = batch_size, Norm_dict = Norm_dict)
 
 
-#%%
+    check_list=[]
+    csv_logger = CSVLogger('/AICourse2022/alan_THDM/Model_3CNN/training_log_500_norm_ppjjjj_'+str(i)+'.csv')
+    checkpoint = ModelCheckpoint(
+                        filepath='/AICourse2022/alan_THDM/Model_3CNN/checkmodel_500_norm_ppjjjj_'+str(i)+'.h5',
+                        save_best_only=True,
+                        verbose=1)
+    check_list.append(checkpoint)
+    check_list.append(csv_logger)
 
-model_3cnn = load_model("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500_norm_ppjjjj_7.h5")
+    # # generator method
+    # history_model_3cnn = model_3cnn.fit(
+    #                                     train_generator,
+    #                                     epochs= 500,
+    #                                     steps_per_epoch= nb_train_samples // batch_size,
+    #                                     validation_data = val_generator,
+    #                                     validation_steps = nb_val_samples // batch_size,
+    #                                     callbacks=check_list,
+    #                                     verbose=1
+    #                                     )
 
-for pro in process:
-    logging.info("Process: {}".format(pro))
+    # normal method
+    history_model_3cnn = model_3cnn.fit(
+                                        x = x_train, 
+                                        y = y_train ,
+                                        validation_data= (x_test, y_test),
+                                        batch_size=512,
+                                        epochs= 500,
+                                        callbacks=check_list,
+                                        verbose=1
+                                        )
 
-    # if pro != "ppjjjj":
-    #     continue
+    model_3cnn.save("/AICourse2022/alan_THDM/Model_3CNN/model_3cnn_500_norm_ppjjjj_"+str(i)+".h5")
 
-    if pro == "ppjjjj":
-        for i, element in enumerate(range(0,len(process[pro]), 30000)):
-            logging.info(i)
-            x_test, y_test = loading_data(imagepath = ImagePath_2, data_dict = process[pro], Norm_dict = Norm_dict, start= element, stop=int(element+30000))
-            prediction = model_3cnn.predict(x_test)
-            np.save("./prediction/"+str(pro)+"_3cnn_prediction_"+str(i)+"_30000_test", prediction)
+    # %%
+    ############################################################################################################################################################
+    ticks_2 = time.time()
+    totaltime =  ticks_2 - ticks_1
+    print("\033[3;33mTime Cost : {:.4f} min\033[0;m".format(totaltime/60.))
 
-    else:
-        for i, element in enumerate(range(0,len(process[pro]), 30000)):
-            logging.info(i)
-            x_test, y_test = loading_data(imagepath = ImagePath, data_dict = process[pro], Norm_dict = Norm_dict, start= element, stop=int(element+30000))
-            prediction = model_3cnn.predict(x_test)
-            np.save("./prediction/"+str(pro)+"_3cnn_prediction_"+str(i)+"_30000_test", prediction)
-
-#%%
-for pro in process:
-    logging.info("Process: {}".format(pro))
-    logging.info("Data total length: {}".format(len(process[pro])))
-
-    # if pro != "ppbbbb":
-    #     continue
-
-    prediction = np.load("./prediction/"+str(pro)+"_3cnn_prediction_"+str(0)+"_30000_test.npy")
-    for i, element in enumerate(range(30000,len(process[pro]), 30000)):
-        pre_tmp = np.load("./prediction/"+str(pro)+"_3cnn_prediction_"+str(i+1)+"_30000_test.npy")
-        # logging.info("Shape of pre_tmp {}".format(pre_tmp.shape))
-        prediction = np.concatenate([prediction,pre_tmp])
-
-
-    logging.info("Shape of prediction {}".format(prediction.shape))
-    logging.info("Prediction total length: {}".format(len(prediction)))
-
-    np.save("./prediction/"+str(pro)+"_3cnn_prediction_test_ppjjjjmodel", prediction)
-    
-    logging.info("{}".format("Done!"))
-    logging.info("\n")
-
-
-# %%
-from sklearn.metrics import confusion_matrix
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-# Please code in this cell
-
-prediction_test =  model_3cnn.predict(x_test)
-
-#%%
-confusion_ = confusion_matrix(y_test[:,1], np.argmax(prediction_test,axis=1))
-
-
-confusion = np.array([[confusion_[0][0]/np.sum(confusion_[0]),confusion_[0][1]/np.sum(confusion_[0])],
-                        [confusion_[1][0]/np.sum(confusion_[0]),confusion_[1][1]/np.sum(confusion_[1])]])
-
-
-truelist = ["sig","bkg"]
-likelist = ["sig-like","bkg-like"]
-
-s = len(truelist)
-f, ax = plt.subplots(1,1, figsize=(s+4, s+4))
-
-aa = ax.imshow(confusion.T, cmap="Oranges", origin= "upper", vmin=0, vmax=1)
-
-divider = make_axes_locatable(ax)
-cax = divider.append_axes("right", size="5%", pad="1%")
-cbar = plt.colorbar(aa, cax=cax)
-cbar.ax.tick_params(labelsize=15)
-# cbar.ax.yaxis.set_major_locator(MaxNLocator(6))
-cbar.set_label("Ratio", rotation=270, fontsize=15, labelpad=30, y=0.5)
-# cbar.set_ticks([0,500,1000,1500,2000])
-# cbar.ax.set_yticklabels(["0","500","1000","1500","2000"])
-cbar.set_ticks([0,0.25,0.5,0.75,1])
-cbar.ax.set_yticklabels(["0","0.25","0.5","0.75","1"])
-
-ax.set_xticks(range((confusion.T).shape[1]))
-ax.set_xticklabels(truelist, fontsize=15, rotation=0)
-ax.set_yticks(range((confusion.T).shape[1]))
-ax.set_yticklabels(likelist, fontsize=15, rotation=45)
-
-my_colors = ["green","red"]
-ax.xaxis.tick_top()
-for ticklabel, tickcolor in zip(ax.get_xticklabels(), my_colors):
-    ticklabel.set_color(tickcolor)
-    
-for ticklabel, tickcolor in zip(ax.get_yticklabels(), my_colors):
-    ticklabel.set_color(tickcolor)
-
-Terminology = np.array([["TP","FP"],["FN","TN"]])
-    
-for (i, j), z in np.ndenumerate(confusion.T):
-    ax.text(j, i, '{:^3s}: {:0.2f}'.format(Terminology[i,j],z), ha='center', va='center',fontsize=15,color="k")
-    
-plt.tight_layout()
-plt.show()
 # %%
