@@ -41,6 +41,7 @@ from function import Basic_Preselection
 
 # %%
 path = "/AICourse2022/alan_THDM/MC_Data/"
+# path = "/AICourse2022/alan_THDM/Data_High_Level_Features/"
 path_ppjjjj = "/AICourse2022/alan_THDM/Data_High_Level_Features/"
    
 """
@@ -48,6 +49,8 @@ Load Original Data
 """
 sig_ppHhh = pd.read_csv(path+"ppHhh_test.csv")
 bkg_ttbar = pd.read_csv(path+"ttbar_test.csv")
+# sig_ppHhh = pd.read_csv(path_ppjjjj+"ppHhh.csv")
+# bkg_ttbar = pd.read_csv(path_ppjjjj+"ttbar.csv")
 # bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
 # bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
 bkg_ppjjjj = pd.read_csv(path_ppjjjj+"ppjjjj.csv")
@@ -91,8 +94,8 @@ for pro in process:
 
     logging.info("Process: {}".format(pro))
     process[pro]["label"] = np.full(len(process[pro]),label)
-    process[pro]["BDT_pred"] =  np.load("/AICourse2022/alan_THDM/prediction/"+str(pro)+"_BDT_prediction_trail1000_test.npy")[:,1]
-    # process[pro]["3CNN_pred"] =  np.load("./prediction/"+str(pro)+"_3cnn_prediction_epoch300_test.npy")[:,0]
+    process[pro]["BDT_pred"] =  np.load("/AICourse2022/alan_THDM/THDM_with_ML/Model/prediction/"+str(pro)+"_BDT_prediction_trail2000_ppjjjj_test.npy")[:,1]
+    process[pro]["3CNN_pred"] =  np.load("/AICourse2022/alan_THDM/prediction/"+str(pro)+"_3cnn_prediction_test_ppjjjjmodel.npy")[:,0]
 
 
 #%%
@@ -150,11 +153,11 @@ def calculate_eff(cut_BDT: float=0.919, cut_3CNN: float=0.0, Luminosity: int=300
         process_eff["BDT"][j] = len(tmp)/process_mclength[element]
 
 
-        # """
-        # 3CNN cut
-        # """
-        # tmp = tmp[(tmp["3CNN_pred"] > cut_3CNN)]
-        # process_eff["3CNN"][j] = len(tmp)/process_mclength[element]
+        """
+        3CNN cut
+        """
+        tmp = tmp[(tmp["3CNN_pred"] > cut_3CNN)]
+        process_eff["3CNN"][j] = len(tmp)/process_mclength[element]
 
 
         """
@@ -175,7 +178,7 @@ def calculate_eff(cut_BDT: float=0.919, cut_3CNN: float=0.0, Luminosity: int=300
                             "ttbar":[],
                             # "ppbbbb":[],
                             # "ppjjjb":[],
-                            "ppjjjj":[],
+                            "ppjjjj":[], 
                         }
 
 
@@ -196,6 +199,9 @@ def calculate_eff(cut_BDT: float=0.919, cut_3CNN: float=0.0, Luminosity: int=300
 selection_1 = calculate_eff(cut_BDT=0.919, cut_3CNN=0.0, Luminosity=3000, b_tag_eff=0.77**4)
 selection_1
 # %%
-selection_2 = calculate_eff(cut_BDT=0.0, cut_3CNN=0.70, Luminosity=3000, b_tag_eff=0.77**4)
+selection_2 = calculate_eff(cut_BDT=0.964, cut_3CNN=0.0, Luminosity=3000, b_tag_eff=0.77**4)
 selection_2
+# %%
+selection_3 = calculate_eff(cut_BDT=0.0, cut_3CNN=0.99, Luminosity=3000, b_tag_eff=0.77**4)
+selection_3
 # %%
