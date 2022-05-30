@@ -2,6 +2,7 @@
 
 #%%
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 import time
 import os
@@ -235,14 +236,6 @@ def gL(tb, type):
         return np.array([Me, Mmu, mta ])*np.sqrt(2)/vev*(np.cos(b)/np.sin(b))*(-1)
     elif type == 4:
         return -np.array([Me, Mmu, mta ])*np.sqrt(2)/vev*tb*(-1)
-
-
-
-#%%
-rand = str(int(np.random.rand()*100000))+"1"
-cb_a, tb, type = 8.80000000e-02 , 5, 2 #Our Benchmark
-sba = np.sqrt(1-cb_a**2)
-mh, mH, mA, mHp, lambda_6, lambda_7, m_12s = 125, 1000, 1001, 1001, 0, 0, 400000
 
 
 #%%
@@ -498,25 +491,47 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
     os.system(cmd)
 
 
-    return float(xection), float(BRhbb), float(BRHhh)
+    return float(xection)*1000, float(BRHhh), float(BRhbb), cb_a, m_12s
 
 
 #%%
-rand = str(int(np.random.rand()*100000))+"1"
-cb_a, tb, type = 8.80000000e-02 , 5, 2 #Our Benchmark
-sba = np.sqrt(1-cb_a**2)
-mh, mH, mA, mHp, lambda_6, lambda_7, m_12s = 125, 1000, 1001, 1001, 0, 0, 400000
+# rand = str(int(np.random.rand()*100000))+"1"
+# cb_a, tb, type = 8.80000000e-02 , 5, 2 #Our Benchmark
+# sba = np.sqrt(1-cb_a**2)
+# mh, mH, mA, mHp, lambda_6, lambda_7, m_12s = 125, 1000, 1001, 1001, 0, 0, 400000
 
-#%%
-Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s)
-    
+# Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s)
+
+
+
+n_slice = 20
+
+cb_a = np.linspace(-1 , 1,  n_slice)
+m12_s = np.linspace(1E+5, 1E+6,  n_slice)
+cba, m12s = np.meshgrid(cb_a, m12_s)
+
+rand = [str(int(np.random.rand()*100000))+"1" for i in range(n_slice*n_slice)]
+sba = np.sqrt(1-cba.reshape(n_slice*n_slice,)**2)
+tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
+mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
+mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
+mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
+mHp = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
+lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+type = np.full((n_slice, n_slice), 2).reshape(n_slice*n_slice,)
+
+tmp_para = []
+for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
+    tmp_para.append(element)
 
 #%%
 from multiprocessing import Process, Pool
+start = time.time()
 
-nb_threads = 1
 
-tmp_para = [[rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s]]
+nb_threads = 10
+
 
 if __name__ == '__main__':
 
@@ -531,3 +546,16 @@ if __name__ == '__main__':
 
 #%%
 # constraint_n = np.array(pool_outputs.get()).reshape(n_slice, n_slice)
+results = np.array(pool_outputs.get())
+pd_data = pd.DataFrame()
+pd_data["Xection_fb"] = results[:,0]
+pd_data["BRHhh"] = results[:,1]
+pd_data["BRhbb"] = results[:,2]
+pd_data["cba"] = results[:,3]
+pd_data["m12s"] = results[:,4]
+
+pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results.csv", index=False)
+# %%
+finish = time.time()
+logging.info("Total TIme: {} min".format((finish-start)/60))
+# %%
