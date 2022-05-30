@@ -1,0 +1,34 @@
+import model 2HDM_NLO
+
+generate  g g > h2 [QCD]
+
+
+output /home/alan/ML_Analysis/THDM/Parameter_Scanning/MG5/proc_ppHhh_randomseed
+
+launch /home/alan/ML_Analysis/THDM/Parameter_Scanning/MG5/proc_ppHhh_randomseed
+
+shower=OFF
+detector=OFF
+analysis=OFF
+madspin=OFF
+done
+
+
+/home/alan/ML_Analysis/THDM/Parameter_Scanning/Parameter_card/param_card_randomseed.dat
+
+set run_card nevents 10000
+set run_card ebeam1 7000.0
+set run_card ebeam2 7000.0
+
+set run_card pdlabel lhapdf 
+set run_card lhaid 260000  #NNPDF30_nlo_as_0118
+set run_card fixed_ren_scale True
+set run_card fixed_fac_scale True
+set run_card scale 500
+set run_card dsqrt_q2fact1 500
+set run_card dsqrt_q2fact2 500
+
+set run_card iseed randomseed
+
+
+done
