@@ -545,7 +545,7 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
         return 0, 0, 0, cb_a, m_12s, tb, \
             0,0,0,0,0, \
             0,0,0,0, \
-            tree_level, perturbativity, stability, 
+            0, 0, 0, 
 
 
 #%%
@@ -562,7 +562,7 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
 
 #%%
 n_slice = 100
-Yukawas_type = 2
+Yukawas_type = 1
 
 cb_a = np.linspace(-1 , 1,  n_slice)
 
