@@ -293,7 +293,14 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
         """
         THDMC_parameter_output_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/THDMC_output/"
 
-        cmd = "/root/THDM_Tools/2HDMC-1.8.0/CalcPhys "+str(mh)+" "+str(mH)+" "+str(mA)+" "+str(mHp)+" "+str(sba)+" "+str(lambda_6)+" "+str(lambda_7)+" "+str(m_12s)+" "+str(tb)+" "+str(type)+" "+str(THDMC_parameter_output_path)+"parameters_"+str(rand)+".txt > "+str(THDMC_parameter_output_path)+"THDM_"+str(rand)+".txt"
+        cmd = "mkdir "+str(THDMC_parameter_output_path)+"tmp_"+str(rand)
+        os.system(cmd)
+
+        THDMC_parameter_output_path = str(THDMC_parameter_output_path)+"tmp_"+str(rand)+"/"
+
+        tmp_cmd = "cd "+str(THDMC_parameter_output_path)+" && "
+
+        cmd = str(tmp_cmd)+"/root/THDM_Tools/2HDMC-1.8.0/CalcPhys "+str(mh)+" "+str(mH)+" "+str(mA)+" "+str(mHp)+" "+str(sba)+" "+str(lambda_6)+" "+str(lambda_7)+" "+str(m_12s)+" "+str(tb)+" "+str(type)+" "+str(THDMC_parameter_output_path)+"parameters_"+str(rand)+".txt > "+str(THDMC_parameter_output_path)+"THDM_"+str(rand)+".txt"
         os.system(cmd)
 
         #%%
@@ -527,9 +534,12 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
         # cmd = "rm -rf " + mg5_card_home_path+"proc_ppHhh_"+str(rand)
         # os.system(cmd)
 
-        cmd = "rm -rf " + THDMC_parameter_output_path+"parameters_"+str(rand)+".txt"
-        os.system(cmd)
-        cmd = "rm -rf " + THDMC_parameter_output_path+"THDM_"+str(rand)+".txt"
+        # cmd = "rm -rf " + THDMC_parameter_output_path+"parameters_"+str(rand)+".txt"
+        # os.system(cmd)
+        # cmd = "rm -rf " + THDMC_parameter_output_path+"THDM_"+str(rand)+".txt"
+        # os.system(cmd)
+
+        cmd = "rm -rf " + THDMC_parameter_output_path
         os.system(cmd)
 
         # cmd = "rm -rf " + parameter_path
@@ -561,16 +571,16 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
 # aaa = Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s)
 
 #%%
-n_slice = 100
-Yukawas_type = 1
+n_slice = 10
+Yukawas_type = 4
 
 cb_a = np.linspace(-1 , 1,  n_slice)
 
-# m12_s = np.linspace(1E+5, 1E+6,  n_slice)
-# cba, m12s = np.meshgrid(cb_a, m12_s)
+m12_s = np.linspace(1E+5, 1E+6,  n_slice)
+cba, m12s = np.meshgrid(cb_a, m12_s)
 
-tb = np.linspace(0.5, 50,  n_slice)
-cba, tb = np.meshgrid(cb_a, tb)
+# tb = np.linspace(0.5, 50,  n_slice)
+# cba, tb = np.meshgrid(cb_a, tb)
 
 
 rand = [str(int(np.random.rand()*100000))+"1" for i in range(n_slice*n_slice)]
@@ -585,8 +595,8 @@ for element in cba.reshape(n_slice*n_slice,):
 sba = np.array(sba)
 # sba = np.sqrt(1-cba.reshape(n_slice*n_slice,)**2)
 
-# tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
-m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
+tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
+# m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
 mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
 mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
 mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
@@ -595,20 +605,30 @@ lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
 
-# tmp_para = []
-# for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
-#     tmp_para.append(element)
+# # scenario C 2005.1057
+# m12s = np.full((n_slice, n_slice), 100000).reshape(n_slice*n_slice,)
+# mH = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
+# mA = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# mHp = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+# lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+# type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
 
 tmp_para = []
-for element in zip(rand, cba.reshape(n_slice*n_slice,), tb.reshape(n_slice*n_slice,), type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s):
+for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
     tmp_para.append(element)
+
+# tmp_para = []
+# for element in zip(rand, cba.reshape(n_slice*n_slice,), tb.reshape(n_slice*n_slice,), type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s):
+#     tmp_para.append(element)
 
 #%%
 from multiprocessing import Process, Pool
 start = time.time()
 
 
-nb_threads = 1
+nb_threads = 4
 
 
 if __name__ == '__main__':
@@ -646,7 +666,7 @@ pd_data["perturbativity"] = results[:,16]
 pd_data["stability"] = results[:,17]
 
 
-pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_tb_cba_current_constraints.csv", index=False)
+pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_m12s_cba_current_constraints.csv", index=False)
 # %%
 finish = time.time()
 logging.info("Total TIme: {} min".format((finish-start)/60))
