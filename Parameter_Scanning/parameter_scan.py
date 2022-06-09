@@ -317,6 +317,8 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
                     l2 = line.strip().split()[1]
                 if "Lambda_3" in line.strip():
                     l3 = line.strip().split()[1]
+                if "Lambda_7" in line.strip():
+                    l7 = line.strip().split()[1]
                 if "Tree-level unitarity" in line.strip():
                     tree_level = line.strip().split()[2]
                 if "Perturbativity" in line.strip():
@@ -382,6 +384,9 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
         # os.system(cmd)
 
         # cmd = "sed -i -e s/param_l3/"+str(l3)+"/g " + parameter_path
+        # os.system(cmd)
+
+        # cmd = "sed -i -e s/param_l7/"+str(l7)+"/g " + parameter_path
         # os.system(cmd)
 
         # cmd = "sed -i -e s/param_mixh/"+str(mixh)+"/g " + parameter_path
@@ -571,8 +576,8 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
 # aaa = Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s)
 
 #%%
-n_slice = 10
-Yukawas_type = 4
+n_slice = 1000
+Yukawas_type = 2
 
 cb_a = np.linspace(-1 , 1,  n_slice)
 
@@ -583,7 +588,7 @@ cba, m12s = np.meshgrid(cb_a, m12_s)
 # cba, tb = np.meshgrid(cb_a, tb)
 
 
-rand = [str(int(np.random.rand()*100000))+"1" for i in range(n_slice*n_slice)]
+rand = [str(int(np.random.rand()*90000000))+"1" for i in range(n_slice*n_slice)]
 
 
 sba = []
@@ -595,25 +600,26 @@ for element in cba.reshape(n_slice*n_slice,):
 sba = np.array(sba)
 # sba = np.sqrt(1-cba.reshape(n_slice*n_slice,)**2)
 
-tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
-# m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
-mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
-mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
-mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
-mHp = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
-lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
-lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
-type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
-
-# # scenario C 2005.1057
-# m12s = np.full((n_slice, n_slice), 100000).reshape(n_slice*n_slice,)
-# mH = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
+# # m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
+# mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
 # mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
-# mA = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
-# mHp = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
+# mHp = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
 # lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 # lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 # type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
+
+# scenario C 2005.1057
+tb = np.full((n_slice, n_slice), 0.9).reshape(n_slice*n_slice,)
+# m12s = np.full((n_slice, n_slice), 100000).reshape(n_slice*n_slice,)
+mH = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
+mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
+mA = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
+mHp = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
+lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
 
 tmp_para = []
 for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
@@ -628,7 +634,7 @@ from multiprocessing import Process, Pool
 start = time.time()
 
 
-nb_threads = 4
+nb_threads = 50
 
 
 if __name__ == '__main__':
@@ -666,7 +672,7 @@ pd_data["perturbativity"] = results[:,16]
 pd_data["stability"] = results[:,17]
 
 
-pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_m12s_cba_current_constraints.csv", index=False)
+pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_m12s_cba_scenario_C.csv", index=False)
 # %%
 finish = time.time()
 logging.info("Total TIme: {} min".format((finish-start)/60))
