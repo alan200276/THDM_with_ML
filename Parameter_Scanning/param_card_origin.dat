@@ -12,7 +12,7 @@ BLOCK CKMBLOCK #
 BLOCK HIGGS # 
       1 param_l2 # l2
       2 param_l3 # l3
-      3 0.000000e+00 # lr7
+      3 param_l7 # lr7
       4 0.000000e+00 # li7
       5 param_mixh # mixh
       6 0.000000e+00 # mixh2
