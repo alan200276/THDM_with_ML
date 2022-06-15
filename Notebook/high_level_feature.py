@@ -114,13 +114,17 @@ process_path_jjjj_2 = sorted(glob.glob("/home/u5/THDM/sample_flow/Data_High_Leve
 process_path_jjjj.extend(process_path_jjjj_2)
 
 #%%
-path = "/home/u5/THDM/"
+# path = "/home/u5/THDM/MC_Data/"
+# sig_ppHhh = pd.read_csv(path+"ppHhh_test.csv")
+# bkg_ttbar = pd.read_csv(path+"ttbar_test.csv")
 
-sig_ppHhh = pd.read_csv(path+"ppHhh.csv")
-bkg_ttbar = pd.read_csv(path+"ttbar.csv")
+path_ppjjjj = "/home/u5/THDM/"
+
+sig_ppHhh = pd.read_csv(path_ppjjjj+"ppHhh.csv")
+bkg_ttbar = pd.read_csv(path_ppjjjj+"ttbar.csv")
 # bkg_ppbbbb = pd.read_csv(path+"ppbbbb.csv")
 # bkg_ppjjjb = pd.read_csv(path+"ppjjjb.csv")
-bkg_ppjjjj = pd.read_csv(path+"ppjjjj.csv")
+bkg_ppjjjj = pd.read_csv(path_ppjjjj+"ppjjjj.csv")
 
 # sig_ppHhh = High_Level_Features(process_path_ppHhh)
 
@@ -280,7 +284,6 @@ for j , element in enumerate(process):
 
 
 
-
     # """
     # M(J1,J2) > 700 GeV
     # """
@@ -375,10 +378,16 @@ TotalSamples = Samples(process_selected["ppHhh"],
 # %%
 def HIST(process, length, title, colors, linestyle,xpo=1,ypo=1):
     hist, bins = np.histogram(process, bins=length)
-    plt.step(bins[:-1], hist.astype(np.float32) / hist.sum(), linestyle ,color= colors ,where='mid',linewidth=5, alpha=0.7, label=title[i])
-#     plt.legend(bbox_to_anchor=(xpo, ypo),ncol=1,fontsize=30, edgecolor = "w",fancybox=False, framealpha=0)
+    # plt.step(bins[:-1], hist.astype(np.float32) / hist.sum(), linestyle ,color= colors ,where='mid',linewidth=5, alpha=0.7, label=title)
     plt.legend(loc="best",ncol=1,fontsize=20, edgecolor = "w",fancybox=False, framealpha=0)
-
+    plt.fill_between(bins[:-1], hist.astype(np.float32) / hist.sum(),  np.zeros(len(bins[:-1])),
+                         linestyle = linestyle ,
+                         color= colors ,
+                         step='mid',
+                         linewidth=3, 
+                         alpha=0.1, 
+                         label="{}".format(title))
+    plt.legend(bbox_to_anchor=(xpo, ypo),ncol=1,fontsize=20, edgecolor = "w",fancybox=False, framealpha=0)
 
 # title = ["ppHhh",
 #           "ttbar",
@@ -391,7 +400,7 @@ title = ["$pp\\to H\\to hh$",
           "$t\\bar{t}$",
         #   "ppbbbb",
         #   "ppjjjb",
-          "$QCD$",
+          "Multijet",
         ]
 
 colors = ["green","red","blue",#"purple","Orange"
@@ -405,15 +414,23 @@ linestyle = ["-","-.",":",#"--","o",
 # %%
 Mjj= TotalSamples.Signal_Background("MJJ")
 
-fig, ax = plt.subplots(1,1, figsize=(12,9))
+fig, ax = plt.subplots(1,1, figsize=(10,10))
 for i, element in enumerate(Mjj):
     length = np.linspace(0,2000,101)
-    HIST(element, length, title,colors[i],linestyle[i])
+    HIST(element, length, title[i],colors[i],linestyle[i])
     ax.tick_params(axis='x', labelsize=20)
     ax.tick_params(axis='y', labelsize=20)
     plt.xlim((0,2000))
     plt.xlabel("$M_{hh}$ GeV", fontsize=25,horizontalalignment='right',x=1) 
 
+xpoi = 1200
+ymax = 0.09
+dy = 0.005
+plt.text(x=xpoi, y=ymax, s="$\sqrt{s}$ = 14 TeV", fontsize=15, rotation=0)
+plt.text(x=xpoi,y=ymax-dy, s="MadGraph5_aMC@NLO 2.7.2",fontsize=15)
+plt.text(x=xpoi,y=ymax-2*dy, s="PYTHIA 8.244",fontsize=15)   
+plt.text(x=xpoi,y=ymax-3*dy, s="$E_T(J_1)$ > 420 GeV",fontsize=15)
+plt.text(x=xpoi,y=ymax-4*dy, s="$M(J_1)$ > 35 GeV",fontsize=15)
     
 # plt.ylim((0.))
 # plt.yscale("log")
@@ -426,8 +443,8 @@ jet_kinematic = [
                   "delta_eta", "Xhh",#"XHH"
                 ]
 jet_kinematic_name = [
-                       "$M_{JJ}$", "$M_{J_1}$", "$p_{T_{J_1}}$", "$M_{J_2}$", "$p_{T_{J_2}}$",
-                       "$\Delta\eta$", "$X_{HH}$"
+                       "$M_{JJ}$ [GeV]", "$M(J_1)$ [GeV]", "$p_T(J_1)$ [GeV]", "$M(J_2)$ [GeV]", "$p_T(J_2)$ [GeV]",
+                       "$|\Delta\eta(JJ)|$", "$X_{HH}$"
                      ]
 
 
@@ -435,7 +452,7 @@ for index, kinematic in enumerate(jet_kinematic):
     Kinematic= TotalSamples.Signal_Background(kinematic)
 
 
-    fig, ax = plt.subplots(1,1, figsize=(12,9))
+    fig, ax = plt.subplots(1,1, figsize=(9,9))
     for i, element in enumerate(Kinematic):
 
 #         xmin, xmax = 0, np.max(process)
@@ -446,18 +463,47 @@ for index, kinematic in enumerate(jet_kinematic):
             xmax = np.sort(Kinematic[0])[int(len(Kinematic[0])*1990/2000)]
 
         length = np.linspace(xmin,xmax,201)
-        HIST(element, length, title,colors[i],linestyle[i])
+        HIST(element, length, title[i],colors[i],linestyle[i])
         ax.tick_params(axis='x', labelsize=20)
         ax.tick_params(axis='y', labelsize=20)
         plt.xlim((xmin,xmax*0.9))
-        plt.xlabel(jet_kinematic_name[index]+" [GeV]", fontsize=25,horizontalalignment='right',x=1) 
+        plt.xlabel(jet_kinematic_name[index], fontsize=25,horizontalalignment='right',x=1) 
+
+    xpoi = xmax*0.5
+    if kinematic == "MJJ":
+        ymax = 0.052
+        dy = 0.003
+    elif kinematic == "MJ1":
+        ymax = 0.06
+        dy = 0.005
+    elif kinematic == "PTJ1":
+        ymax = 0.023
+        dy = 0.0015
+    elif kinematic == "MJ2":
+        ymax = 0.025
+        dy = 0.002
+    elif kinematic == "PTJ2":
+        ymax = 0.02
+        dy = 0.0015
+    elif kinematic == "delta_eta":
+        ymax = 0.0095
+        dy = 0.0006
+    elif kinematic == "Xhh":
+        ymax = 0.014
+        dy = 0.001
+
+    plt.text(x=xpoi, y=ymax, s="$\sqrt{s}$ = 14 TeV", fontsize=15, rotation=0)
+    plt.text(x=xpoi,y=ymax-dy, s="MadGraph5_aMC@NLO 2.7.2",fontsize=15)
+    plt.text(x=xpoi,y=ymax-2*dy, s="PYTHIA 8.244",fontsize=15)   
+    plt.text(x=xpoi,y=ymax-3*dy, s="$E_T(J_1)$ > 420 GeV",fontsize=15)
+    plt.text(x=xpoi,y=ymax-4*dy, s="$M(J_1)$ > 35 GeV",fontsize=15)
 
 
-    # plt.ylim((0.))
+    plt.ylim((0.))
     unit = np.around((xmax-xmin)/200, decimals=2)
     
     plt.ylabel("1/N dN/d" +jet_kinematic_name[index]+ "/ "+str(unit) , fontsize=25, horizontalalignment='right',y=1)
-    # plt.savefig("./Plots/m_ww_parton.png", transparent=True, bbox_inches='tight')  #save figure as png
+    plt.savefig("../Plots/"+str(kinematic)+".pdf", transparent=True, bbox_inches='tight')  #save figure as pdf
     plt.show()  
 # %%
 jet_substructure = [
@@ -482,29 +528,83 @@ for index, substructure in enumerate(jet_substructure):
     Substructure= TotalSamples.Signal_Background(substructure)
 
 
-    fig, ax = plt.subplots(1,1, figsize=(12,9))
+    fig, ax = plt.subplots(1,1, figsize=(10,10))
     for i, element in enumerate(Substructure):
 
 #         xmin, xmax = 0, np.max(process)
         xmin = np.sort(Substructure[0])[int(len(Substructure[0])*1/2000)] 
         xmax = np.sort(Substructure[0])[int(len(Substructure[0])*1990/2000)]
-        length = np.linspace(xmin,xmax,201)
-        HIST(element, length, title,colors[i],linestyle[i])
+        length = np.linspace(xmin,xmax,101)
+        HIST(element, length, title[i],colors[i],linestyle[i])
         ax.tick_params(axis='x', labelsize=20)
         ax.tick_params(axis='y', labelsize=20)
         plt.xlim((xmin,xmax*0.9))
         plt.xlabel(jet_substructure_name[index] , fontsize=25,horizontalalignment='right',x=1) 
+    
+    plt.ylim((0.))
+    unit = np.around((xmax-xmin)/100, decimals=2)
+
+    if substructure == "t211": 
+        xpoi = xmax*0.3 
+        ymax = 0.0225
+        dy = 0.001
+    elif substructure == "D211":
+        xpoi = xmax*0.5
+        ymax = 0.07
+        dy = 0.004
+    elif substructure == "D221":
+        xpoi = 6
+        ymax = 0.23
+        dy = 0.015
+        plt.xlim((0,10))
+    elif substructure == "C211":
+        xpoi = xmax*0.5
+        ymax = 0.022
+        dy = 0.0013
+        unit = np.around((xmax-xmin)/100, decimals=3)
+    elif substructure == "C221":
+        xpoi = xmax*0.5
+        ymax = 0.065
+        dy = 0.0032
+        unit = np.around((xmax-xmin)/100, decimals=3)
+    elif substructure == "t212":
+        xpoi = 0.25
+        ymax = 0.022
+        dy = 0.001
+    elif substructure == "D212":
+        xpoi = 3.5
+        ymax = 0.058
+        dy = 0.003
+        plt.xlim((0,6))
+    elif substructure == "D222":
+        xpoi = 6
+        ymax = 0.23
+        dy = 0.015
+        plt.xlim((0,10))
+    elif substructure == "C212":
+        xpoi = xmax*0.5
+        ymax = 0.022
+        dy = 0.0013
+        unit = np.around((xmax-xmin)/100, decimals=3)
+    elif substructure == "C222":
+        xpoi = xmax*0.5
+        ymax = 0.06
+        dy = 0.0032
+        unit = np.around((xmax-xmin)/100, decimals=3)
+        
+
+    plt.text(x=xpoi, y=ymax, s="$\sqrt{s}$ = 14 TeV", fontsize=15, rotation=0)
+    plt.text(x=xpoi,y=ymax-dy, s="MadGraph5_aMC@NLO 2.7.2",fontsize=15)
+    plt.text(x=xpoi,y=ymax-2*dy, s="PYTHIA 8.244",fontsize=15)   
+    plt.text(x=xpoi,y=ymax-3*dy, s="$E_T(J_1)$ > 420 GeV",fontsize=15)
+    plt.text(x=xpoi,y=ymax-4*dy, s="$M(J_1)$ > 35 GeV",fontsize=15)
 
 
-    # plt.ylim((0.))
-    unit = np.around((xmax-xmin)/200, decimals=2)
+    
     
     plt.ylabel("1/N dN/d" +jet_substructure_name[index]+ "/ "+str(unit) , fontsize=25, horizontalalignment='right',y=1)
-    # plt.savefig("./Plots/m_ww_parton.png", transparent=True, bbox_inches='tight')  #save figure as png
+    plt.savefig("../Plots/"+str(substructure)+".pdf", transparent=True, bbox_inches='tight')  #save figure as pdf
     plt.show()  
 
-# %%
-
-# %%
 
 # %%
