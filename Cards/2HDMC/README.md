@@ -27,15 +27,8 @@ The following is the procedure for installation and setting.
         cd higgsbounds-master
         `     
         `  
-        mkdir build && cd build
+        mkdir build && cd build && cmake ..  && make
         `    
-        `
-        cmake ..        
-        `   
-        `  
-        make
-        `  
-
 
     * download HiggsSignals, unpack and compile  
         `
@@ -48,15 +41,8 @@ The following is the procedure for installation and setting.
         cd higgssignals-master
         `  
         `  
-        mkdir build && cd build
+        mkdir build && cd build && cmake ..  && make
         `    
-        `
-        cmake ..        
-        `   
-        `
-        make
-        `
-    
     * download 2HDMC, unpack and compile  
         `
         wget https://2hdmc.hepforge.org/downloads/2HDMC-1.8.0.tar.gz    
@@ -85,6 +71,10 @@ The following is the procedure for installation and setting.
     
         `
         make  CFLAGS=-fpermissive
+        `
+        or 
+        `
+        make  
         `
         
     * use 2HDMC to calculate
