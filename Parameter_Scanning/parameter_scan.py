@@ -366,142 +366,142 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
             lines = f.readlines()
 
 
-        # # %%
-        # """
-        # Modify Parameter Card for MG5
-        # """
-        # parameter_card_home_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/Parameter_card/"
-        # parameter_card_origin_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/"
-        # cmd = "cp "+str(parameter_card_origin_path)+"param_card_origin.dat "+str(parameter_card_home_path)+"param_card_"+str(rand)+".dat"
-        # os.system(cmd)
+        # %%
+        """
+        Modify Parameter Card for MG5
+        """
+        parameter_card_home_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/Parameter_card/"
+        parameter_card_origin_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/"
+        cmd = "cp "+str(parameter_card_origin_path)+"param_card_origin.dat "+str(parameter_card_home_path)+"param_card_"+str(rand)+".dat"
+        os.system(cmd)
 
-        # parameter_path = str(parameter_card_home_path)+"param_card_"+str(rand)+".dat"
+        parameter_path = str(parameter_card_home_path)+"param_card_"+str(rand)+".dat"
 
-        # """
-        # BLOCK HIGGS
-        # """
-        # cmd = "sed -i -e s/param_l2/"+str(l2)+"/g " + parameter_path
-        # os.system(cmd)
+        """
+        BLOCK HIGGS
+        """
+        cmd = "sed -i -e s/param_l2/"+str(l2)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_l3/"+str(l3)+"/g " + parameter_path
-        # os.system(cmd)
+        cmd = "sed -i -e s/param_l3/"+str(l3)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_l7/"+str(l7)+"/g " + parameter_path
-        # os.system(cmd)
+        cmd = "sed -i -e s/param_l7/"+str(l7)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_mixh/"+str(mixh)+"/g " + parameter_path
-        # os.system(cmd)
-
-
-        # """
-        # BLOCK LOOP
-        # """
-        # param_ytrs1 = ghU(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ytrs1/"+str(param_ytrs1)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ytrs2 = gHU(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ytrs2/"+str(param_ytrs2)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ytrs3 = gAU(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ytrs3/"+str(param_ytrs3)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ytrhp = gAU(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ytrhp/"+str(param_ytrhp)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ybrs1 = ghD(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ybrs1/"+str(param_ybrs1)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ybrs2 = gHD(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ybrs2/"+str(param_ybrs2)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ybrs3 = gAD(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ybrs3/"+str(param_ybrs3)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_ybrhp = gAD(cb_a, tb, type )
-        # cmd = "sed -i -e s/param_ybrhp/"+str(param_ybrhp)+"/g " + parameter_path
-        # os.system(cmd)
+        cmd = "sed -i -e s/param_mixh/"+str(mixh)+"/g " + parameter_path
+        os.system(cmd)
 
 
-        # """
-        # INFORMATION FOR MASS
-        # """
-        # cmd = "sed -i -e s/param_mh1/"+str(mh)+"/g " + parameter_path
-        # os.system(cmd)
+        """
+        BLOCK LOOP
+        """
+        param_ytrs1 = ghU(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ytrs1/"+str(param_ytrs1)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_mh2/"+str(mH)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ytrs2 = gHU(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ytrs2/"+str(param_ytrs2)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_mh3/"+str(mA)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ytrs3 = gAU(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ytrs3/"+str(param_ytrs3)+"/g " + parameter_path
+        os.system(cmd)
 
-        # cmd = "sed -i -e s/param_mhc/"+str(mHp)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ytrhp = gAU(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ytrhp/"+str(param_ytrhp)+"/g " + parameter_path
+        os.system(cmd)
 
-        # """
-        # INFORMATION FOR YUKAWAGDI
-        # """
-        # param_gdr33 = gD(tb, type)[2]
-        # cmd = "sed -i -e s/param_gdr33/"+str(param_gdr33)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ybrs1 = ghD(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ybrs1/"+str(param_ybrs1)+"/g " + parameter_path
+        os.system(cmd)
 
-        # param_glr11 = gL(tb, type)[0]
-        # cmd = "sed -i -e s/param_glr11/"+str(param_glr11)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ybrs2 = gHD(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ybrs2/"+str(param_ybrs2)+"/g " + parameter_path
+        os.system(cmd)
 
-        # param_glr22 = gL(tb, type)[1]
-        # cmd = "sed -i -e s/param_glr22/"+str(param_glr22)+"/g " + parameter_path
-        # os.system(cmd)
+        param_ybrs3 = gAD(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ybrs3/"+str(param_ybrs3)+"/g " + parameter_path
+        os.system(cmd)
 
-        # param_glr33 = gL(tb, type)[2]
-        # cmd = "sed -i -e s/param_glr33/"+str(param_glr33)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # param_gur33 = gU(tb, type)[2]
-        # cmd = "sed -i -e s/param_gur33/"+str(param_gur33)+"/g " + parameter_path
-        # os.system(cmd)
-
-        # with open(parameter_path,'a') as f:
-        #     f.writelines("\n")
-        #     f.writelines(lines[branchin_ratio_start:branchin_ratio_end])
-        # # %%
-        # """
-        # Create MG5 Process Card
-        # """
-        # mg5_card_home_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/MG5/"
-        # mg5_card_origin_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/"
-        # cmd = "cp "+str(mg5_card_origin_path)+"proc_ppHhh.txt "+str(mg5_card_home_path)+"proc_ppHhh_"+str(rand)+".txt"
-        # os.system(cmd)
-
-        # mg5_card_path = str(mg5_card_home_path)+"proc_ppHhh_"+str(rand)+".txt"
+        param_ybrhp = gAD(cb_a, tb, type )
+        cmd = "sed -i -e s/param_ybrhp/"+str(param_ybrhp)+"/g " + parameter_path
+        os.system(cmd)
 
 
-        # cmd = "sed -i -e s/randomseed/"+str(rand)+"/g " + mg5_card_path
-        # os.system(cmd)
-        # # %%
-        # """
-        # Execute MG5 
-        # """
-        # cmd = "python /root/MG5_aMC_v2_7_3/bin/mg5_aMC "+mg5_card_home_path+"proc_ppHhh_"+str(rand)+".txt"
-        # os.system(cmd)
+        """
+        INFORMATION FOR MASS
+        """
+        cmd = "sed -i -e s/param_mh1/"+str(mh)+"/g " + parameter_path
+        os.system(cmd)
+
+        cmd = "sed -i -e s/param_mh2/"+str(mH)+"/g " + parameter_path
+        os.system(cmd)
+
+        cmd = "sed -i -e s/param_mh3/"+str(mA)+"/g " + parameter_path
+        os.system(cmd)
+
+        cmd = "sed -i -e s/param_mhc/"+str(mHp)+"/g " + parameter_path
+        os.system(cmd)
+
+        """
+        INFORMATION FOR YUKAWAGDI
+        """
+        param_gdr33 = gD(tb, type)[2]
+        cmd = "sed -i -e s/param_gdr33/"+str(param_gdr33)+"/g " + parameter_path
+        os.system(cmd)
+
+        param_glr11 = gL(tb, type)[0]
+        cmd = "sed -i -e s/param_glr11/"+str(param_glr11)+"/g " + parameter_path
+        os.system(cmd)
+
+        param_glr22 = gL(tb, type)[1]
+        cmd = "sed -i -e s/param_glr22/"+str(param_glr22)+"/g " + parameter_path
+        os.system(cmd)
+
+        param_glr33 = gL(tb, type)[2]
+        cmd = "sed -i -e s/param_glr33/"+str(param_glr33)+"/g " + parameter_path
+        os.system(cmd)
+
+        param_gur33 = gU(tb, type)[2]
+        cmd = "sed -i -e s/param_gur33/"+str(param_gur33)+"/g " + parameter_path
+        os.system(cmd)
+
+        with open(parameter_path,'a') as f:
+            f.writelines("\n")
+            f.writelines(lines[branchin_ratio_start:branchin_ratio_end])
+        # %%
+        """
+        Create MG5 Process Card
+        """
+        mg5_card_home_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/MG5/"
+        mg5_card_origin_path = "/home/alan/ML_Analysis/THDM/Parameter_Scanning/"
+        cmd = "cp "+str(mg5_card_origin_path)+"proc_ppHhh.txt "+str(mg5_card_home_path)+"proc_ppHhh_"+str(rand)+".txt"
+        os.system(cmd)
+
+        mg5_card_path = str(mg5_card_home_path)+"proc_ppHhh_"+str(rand)+".txt"
 
 
-        # # %%
-        # """
-        # Read run_01_tag_1_banner.txt 
-        # """
-        # run_banner_path = mg5_card_home_path+"proc_ppHhh_"+str(rand)+"/Events/run_01/run_01_tag_1_banner.txt"
-        # with open(run_banner_path,'r') as f:
-        #     for i, line in enumerate(f):
-        #             # print(line.strip())
-        #         if "#  Integrated weight (pb)  :" in line.strip():
-        #             xection = line.strip().split()[-1]
+        cmd = "sed -i -e s/randomseed/"+str(rand)+"/g " + mg5_card_path
+        os.system(cmd)
+        # %%
+        """
+        Execute MG5 
+        """
+        cmd = "python /root/MG5_aMC_v2_7_3/bin/mg5_aMC "+mg5_card_home_path+"proc_ppHhh_"+str(rand)+".txt"
+        os.system(cmd)
+
+
+        # %%
+        """
+        Read run_01_tag_1_banner.txt 
+        """
+        run_banner_path = mg5_card_home_path+"proc_ppHhh_"+str(rand)+"/Events/run_01/run_01_tag_1_banner.txt"
+        with open(run_banner_path,'r') as f:
+            for i, line in enumerate(f):
+                    # print(line.strip())
+                if "#  Integrated weight (pb)  :" in line.strip():
+                    xection = line.strip().split()[-1]
         #%%
         """
         Read Branching Ratio from 2HDMC Output
@@ -527,31 +527,26 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
             HSRESULT.append(line.strip().split()[1])
 
         #%%
-        # logging.info("Xection: {} (fb)".format(float(xection)*1000))
+        logging.info("Xection: {} (fb)".format(float(xection)*1000))
         logging.info("BRhbb: {}".format(BRhbb))
         logging.info("BRHhh: {}".format(BRHhh))
         #%%
         """
         Remove Files
         """
-        # cmd = "rm -rf " + mg5_card_path
-        # os.system(cmd)
-        # cmd = "rm -rf " + mg5_card_home_path+"proc_ppHhh_"+str(rand)
-        # os.system(cmd)
-
-        # cmd = "rm -rf " + THDMC_parameter_output_path+"parameters_"+str(rand)+".txt"
-        # os.system(cmd)
-        # cmd = "rm -rf " + THDMC_parameter_output_path+"THDM_"+str(rand)+".txt"
-        # os.system(cmd)
+        cmd = "rm -rf " + mg5_card_path
+        os.system(cmd)
+        cmd = "rm -rf " + mg5_card_home_path+"proc_ppHhh_"+str(rand)
+        os.system(cmd)
 
         cmd = "rm -rf " + THDMC_parameter_output_path
         os.system(cmd)
 
-        # cmd = "rm -rf " + parameter_path
-        # os.system(cmd)
+        cmd = "rm -rf " + parameter_path
+        os.system(cmd)
 
         # return float(xection)*1000, float(BRHhh), float(BRhbb), cb_a, m_12s, tb
-        return 0, float(BRHhh), float(BRhbb), cb_a, m_12s, tb, \
+        return float(xection)*1000, float(BRHhh), float(BRhbb), cb_a, m_12s, tb, \
             HBRESULT[0],HBRESULT[1],HBRESULT[2],HBRESULT[3],HBRESULT[4], \
             HSRESULT[0],HSRESULT[1],HSRESULT[2],HSRESULT[3], \
             tree_level, perturbativity, stability, 
@@ -576,16 +571,16 @@ def Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, 
 # aaa = Calculate_Xection_BranhingRatio(rand, cb_a, tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m_12s)
 
 #%%
-n_slice = 1000
+n_slice = 100
 Yukawas_type = 2
 
 cb_a = np.linspace(-1 , 1,  n_slice)
 
-m12_s = np.linspace(1E+5, 1E+6,  n_slice)
-cba, m12s = np.meshgrid(cb_a, m12_s)
+# m12_s = np.linspace(1E+5, 1E+6,  n_slice)
+# cba, m12s = np.meshgrid(cb_a, m12_s)
 
-# tb = np.linspace(0.5, 50,  n_slice)
-# cba, tb = np.meshgrid(cb_a, tb)
+tb = np.linspace(0.5, 50,  n_slice)
+cba, tb = np.meshgrid(cb_a, tb)
 
 
 rand = [str(int(np.random.rand()*90000000))+"1" for i in range(n_slice*n_slice)]
@@ -601,33 +596,33 @@ sba = np.array(sba)
 # sba = np.sqrt(1-cba.reshape(n_slice*n_slice,)**2)
 
 # tb = np.full((n_slice, n_slice), 5).reshape(n_slice*n_slice,)
-# # m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
-# mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
-# mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
-# mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
-# mHp = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
-# lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
-# lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
-# type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
-
-# scenario C 2005.1057
-tb = np.full((n_slice, n_slice), 0.9).reshape(n_slice*n_slice,)
-# m12s = np.full((n_slice, n_slice), 100000).reshape(n_slice*n_slice,)
-mH = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
+m12s = np.full((n_slice, n_slice), 400000).reshape(n_slice*n_slice,)
+mH = np.full((n_slice, n_slice), 1000).reshape(n_slice*n_slice,)
 mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
-mA = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
-mHp = np.full((n_slice, n_slice), 1100).reshape(n_slice*n_slice,)
+mA = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
+mHp = np.full((n_slice, n_slice), 1001).reshape(n_slice*n_slice,)
 lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
 type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
 
-tmp_para = []
-for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
-    tmp_para.append(element)
+# # scenario C 2005.1057
+# # tb = np.full((n_slice, n_slice), 0.9).reshape(n_slice*n_slice,)
+# m12s = np.full((n_slice, n_slice), 100000).reshape(n_slice*n_slice,)
+# mH = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# mh = np.full((n_slice, n_slice), 125).reshape(n_slice*n_slice,)
+# mA = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# mHp = np.full((n_slice, n_slice), 650).reshape(n_slice*n_slice,)
+# lambda_6 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+# lambda_7 = np.full((n_slice, n_slice), 0).reshape(n_slice*n_slice,)
+# type = np.full((n_slice, n_slice), Yukawas_type).reshape(n_slice*n_slice,)
 
 # tmp_para = []
-# for element in zip(rand, cba.reshape(n_slice*n_slice,), tb.reshape(n_slice*n_slice,), type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s):
+# for element in zip(rand, cba.reshape(n_slice*n_slice,), tb, type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s.reshape(n_slice*n_slice,)):
 #     tmp_para.append(element)
+
+tmp_para = []
+for element in zip(rand, cba.reshape(n_slice*n_slice,), tb.reshape(n_slice*n_slice,), type, sba, mh, mH, mA, mHp, lambda_6, lambda_7, m12s):
+    tmp_para.append(element)
 
 #%%
 from multiprocessing import Process, Pool
@@ -672,7 +667,7 @@ pd_data["perturbativity"] = results[:,16]
 pd_data["stability"] = results[:,17]
 
 
-pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_m12s_cba_scenario_C.csv", index=False)
+pd_data.to_csv("/home/alan/ML_Analysis/THDM/Parameter_Scanning/scan_results_type_"+str(Yukawas_type)+"_"+str(n_slice**2)+"_tb_cba_current_constraints.csv", index=False)
 # %%
 finish = time.time()
 logging.info("Total TIme: {} min".format((finish-start)/60))
